@@ -1,4 +1,4 @@
-NAME = ft_irc
+NAME = ircserve
 
 SRC = src/Channel.cpp src/Client.cpp src/main.cpp src/Server.cpp\
 		src/commands/Invite.cpp src/commands/Join.cpp src/commands/Kick.cpp src/commands/Mode.cpp\
