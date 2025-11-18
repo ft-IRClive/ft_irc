@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:22:17 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/17 16:05:58 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/18 15:33:38 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@
 class Client
 {
 	private:
-		Client();
-		~Client();
 
 	public:
+		Client();
+		~Client();
 
 };
 
