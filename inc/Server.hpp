@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:22:46 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/18 18:33:38 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/20 15:40:40 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,65 +59,65 @@ class Server
 			std::string	command;
 			void (Server::*handler)(const std::string&, const int);
 		};
-		static const int				_command_list_size = 16;
-		static const command_handler	_command_list[_command_list_size];
+		static const int				_commandListSize = 16;
+		static const command_handler	_commandList[_commandListSize];
 
 		int							_port;
 		std::string					_passwd;
-		int							_fd_ppal_socket;
+		int							_fdPpalSocket;
 		std::string					_hostname;
 		std::vector<Client *>		_clients;
 		std::vector<Channel *>		_channels;
-		std::vector<struct pollfd>	_fds_poll;
-		struct sockaddr_in			_conf_socket;
-		int							_reply_code;
+		std::vector<struct pollfd>	_fdsPoll;
+		struct sockaddr_in			_confSocket;
+		int							_replyCode;
 		static bool					_signal;
 
-		std::string	_get_hostname();
+		std::string	_getHostname();
 
-		void	_is_valid_port(const std::string& port); //Between 1 and 65535
-		bool	_is_client_in_any_channel(const int fd);
-		bool	_client_is_ready_to_login(const int fd); //If PASS + NICK + USER was send
-		bool	_is_valid_nickname(const std::string& nickname); //IRC rules
-		bool	_is_nickname_in_use(const int fd, const std::string& nickname);
+		void	_isValidPort(const std::string& port); //Between 1 and 65535
+		bool	_isClientInAnyChannel(const int fd);
+		bool	_clientIsReadyToLogin(const int fd); //If PASS + NICK + USER was send
+		bool	_isValidNickname(const std::string& nickname); //IRC rules
+		bool	_isNicknameInUse(const int fd, const std::string& nickname);
 
 		//Command handler
-		void	_handler_client_join(const std::string &buffer, const int fd);
-		void	_handler_client_quit(const std::string &buffer, const int fd);
-		void	_handler_client_part(const std::string &buffer, const int fd);
-		void	_handler_client_mode(const std::string &buffer, const int fd);
-		void	_handler_client_kick(const std::string &buffer, const int fd);
-		void	_handler_client_topic(const std::string &buffer, const int fd);
-		void	_handler_client_invite(const std::string &buffer, const int fd);
-		void	_handler_client_privmsg(const std::string &buffer, const int fd);
-		void	_handler_client_nickname(const std::string &nickname, const int fd);
-		void	_handler_client_username(const std::string &username, const int fd);
-		void	_handler_client_password(const std::string &password, const int fd);
+		void	_handlerClientJoin(const std::string &buffer, const int fd);
+		void	_handlerClientQuit(const std::string &buffer, const int fd);
+		void	_handlerClient_part(const std::string &buffer, const int fd);
+		void	_handlerClientMode(const std::string &buffer, const int fd);
+		void	_handlerClientKick(const std::string &buffer, const int fd);
+		void	_handlerClientTopic(const std::string &buffer, const int fd);
+		void	_handlerClientInvite(const std::string &buffer, const int fd);
+		void	_handlerClientPrivmsg(const std::string &buffer, const int fd);
+		void	_handlerClientNickname(const std::string &nickname, const int fd);
+		void	_handlerClientUsername(const std::string &username, const int fd);
+		void	_handlerClientPassword(const std::string &password, const int fd);
 
 		//Signal handler
-		static void	_signal_handler(const int signum);
+		static void	_signalHandler(const int signum);
 
-		void	_close_fds();
-		void	_server_loop();
-		void	_set_server_socket();
-		void	_add_server_signal();
-		void	_accept_new_client();
-		void	_clear_client(const int fd);
-		void	_receive_new_data(const int fd);
-		void	_send_response(const int fd, const std::string &response);
+		void	_closeFds();
+		void	_serverLoop();
+		void	_setServerSocket();
+		void	_addServerSignal();
+		void	_acceptNewClient();
+		void	_clearClient(const int fd);
+		void	_receiveNewData(const int fd);
+		void	_sendResponse(const int fd, const std::string &response);
 
-		void						_execute_command(const std::string buffer, const int fd);
-		std::string					_cleanse_buffer(const std::string &buffer, const std::string &chars_to_remove);
+		void						_executeCommand(const std::string buffer, const int fd);
+		std::string					_cleanseBuffer(const std::string &buffer, const std::string &chars_to_remove);
 
-		Client*		_get_client(const int fd);
-		Client*		_get_client(const std::string nickname);
+		Client*		_getClient(const int fd);
+		Client*		_getClient(const std::string nickname);
 
-		void		_add_channel(Channel *channel);
-		Channel*	_get_channel(const std::string &channel_name);
+		void		_addChannel(Channel *channel);
+		Channel*	_getChannel(const std::string &channel_name);
 
-		void		_remove_client_fd(const int fd);
-		void		_remove_client_from_channels(const int fd);
-		void		_remove_client_from_server(const int fd);
+		void		_removeClientFd(const int fd);
+		void		_removeClientFromChannels(const int fd);
+		void		_removeClientFromServer(const int fd);
 
 	public:
 		Server(void);

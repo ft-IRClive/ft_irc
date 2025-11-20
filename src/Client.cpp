@@ -3,161 +3,161 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: claudia <claudia@student.42.fr>            +#+  +:+       +#+        */
+/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:12:25 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/20 13:18:09 by claudia          ###   ########.fr       */
+/*   Updated: 2025/11/20 17:03:21 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/Client.hpp"
 
-Client:: Client(int fd)
+Client::Client(int fd)
 {
-    _fd = fd;
-    _isOp = false;
-    _isLogged = false;
-    _isAuthenticated = false;
-    _nname = "";
-    _uname = "";
-    _pswd = "";
-    _ipAddr = "";
-    _buffer = "";
-    _channelsInvited = std::vector<std::string>();
-}
-
-Client::~Client()
-{
-    
+	this->_fd = fd;
+	this->_isOp = false;
+	this->_isLogged = false;
+	this->_isAuthenticated = false;
+	this->_nname = "";
+	this->_uname = "";
+	this->_pswd = "";
+	this->_ipAddr = "";
+	this->_buffer = "";
+	this->_channelsInvited = std::vector<std::string>();
 }
 
 int Client::getFd() const
 {
-    return (_fd);
+	return (this->_fd);
 }
 
 bool Client::getIsOp() const
 {
-    return (_isOp);
+	return (this->_isOp);
 }
 
 bool Client::getIsLogged() const
 {
-    return (_isLogged);
+	return (this->_isLogged);
 }
 
 bool Client::getIsAuthenticated() const
 {
-    return (_isAuthenticated);
+	return (this->_isAuthenticated);
 }
 
 std::string Client:: getNname() const
 {
-    return (_nname);   
+	return (this->_nname);
 }
 
 std::string Client:: getUname() const
 {
-    return (_uname);
+	return (this->_uname);
 }
 
 std::string Client:: getPswd() const
 {
-    return (_pswd);
+	return (this->_pswd);
 }
 
 std::string Client:: getIpAddr() const
 {
-    return (_ipAddr);
+	return (this->_ipAddr);
 }
 
 std::string Client:: getBuffer() const
 {
-    return (_buffer);
+	return (this->_buffer);
 }
 
 std::string Client:: getHostName() const
 {
-    return (_uname + "@" + _ipAddr);
+	return (this->_uname + "@" + this->_ipAddr);
 }
 
 std::vector<std::string> Client:: getChannelsInvited() const
 {
-    return (_channelsInvited);
+	return (this->_channelsInvited);
+}
+
+void Client::setFd(const int fd)
+{
+	this->_fd = fd;
 }
 
 void Client:: setOp(bool isOp)
 {
-    _isOp = isOp;
+	this->_isOp = isOp;
 }
 
 void Client:: setIsLogged(bool isLogged)
 {
-    _isLogged = isLogged;
+	this->_isLogged = isLogged;
 }
 
 void Client:: setIsAuthenticated(bool isAuthenticated)
 {
-    _isAuthenticated = isAuthenticated;
+	this->_isAuthenticated = isAuthenticated;
 }
 
 void Client:: setNname(const std::string &nname)
 {
-    _nname = nname;
+	this->_nname = nname;
 }
 
 void Client:: setUname(const std::string &uname)
 {
-    _uname = uname;
+	this->_uname = uname;
 }
 void Client:: setPswd(const std::string &pswd)
 {
-    _pswd = pswd;
+	this->_pswd = pswd;
 }
 void Client:: setIpAddr(const std::string &ipAddr)
 {
-    _ipAddr = ipAddr;
+	this->_ipAddr = ipAddr;
 }
 
 void Client:: setBuffer(const std::string &buffer)
 {
-    _buffer = buffer;
+	this->_buffer = buffer;
 }
 
 bool Client:: isChannelInvited(const std::string &channel) const
 {
-    for (size_t i = 0; i < _channelsInvited.size(); ++i)
-    {
-        if (_channelsInvited[i] == channel)
-            return (true);
-    }
-    return (false);
+	for (size_t i = 0; i < this->_channelsInvited.size(); ++i)
+	{
+		if (this->_channelsInvited[i] == channel)
+			return (true);
+	}
+	return (false);
 }
 
 void Client:: addChannelInvited(const std::string &channel)
 {
-    if (!isChannelInvited(channel))
-        _channelsInvited.push_back(channel);
+	if (!isChannelInvited(channel))
+		this->_channelsInvited.push_back(channel);
 }
 
 void Client::removeChannelInvited(const std::string &channel)
 {
-    for (std::vector<std::string>::iterator it = _channelsInvited.begin(); it != _channelsInvited.end(); ++it)
-    {
-        if (*it == channel)
-        {
-            _channelsInvited.erase(it);
-            break;
-        }
-    }
+	for (std::vector<std::string>::iterator it = this->_channelsInvited.begin(); it != this->_channelsInvited.end(); ++it)
+	{
+		if (*it == channel)
+		{
+			this->_channelsInvited.erase(it);
+			break;
+		}
+	}
 }
 
 void Client::appendToBuffer(const std::string &data)
 {
-    _buffer += data;
+	this->_buffer += data;
 }
 
 void Client::clearBuffer()
 {
-    _buffer.clear();
+	this->_buffer.clear();
 }
