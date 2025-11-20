@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:12:39 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/20 17:10:07 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/20 17:44:50 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,17 @@ void Server::_isValidPort(const std::string& port)
 
 bool Server::_isClientInAnyChannel(const int fd)
 {
+	Client	*client = this->_getClient(fd);
 
+	//Esta función debe estar en el canal
+	/*for (std::vector<Channel*>::iterator i = this->_channels.begin(); i != this->_channels.end(); i++)
+	{
+		if ((*i)->hasClient(client))
+		{
+			return (true);
+		}
+	}*/
+	return (false);
 }
 
 bool Server::_clientIsReadyToLogin(const int fd)
@@ -106,26 +116,49 @@ bool Server::_clientIsReadyToLogin(const int fd)
 
 bool Server::_isValidNickname(const std::string& nickname)
 {
-
+	if (nickname.size() < 3)
+		return (false);
+	for (std::string::const_iterator i = nickname.begin(); i != nickname.end(); i++)
+	{
+		if (!std::isalnum(*i))
+			return (false);
+	}
+	return (true);
 }
 
-bool Server::_isNicknameInUse(const int fd, const std::string& nickname)
+bool Server::_isNicknameInUse(const int fd, const std::string& username)
 {
-
+	for (std::vector<Client *>::iterator i = this->_clients.begin(); i != this->_clients.end(); i++)
+	{
+		if ((*i)->getNname() == username && (*i)->getFd() != fd)
+			return (true);
+	}
+	return (false);
 }
 
 //-----------
 
 void Server::_signalHandler(const int signum)
 {
-
+	(void)signum;
+	std::cout << "Signal received!" << std::endl;
+	Server::_signal = true;
 }
 
 //-----------
 
 void Server::_closeFds()
 {
-
+	for (size_t i = 0; i < _clients.size(); i++)
+	{
+		std::cout << "Client [" << _clients[i]->getFd() << "] Disconnected"<< std::endl;
+		close(_clients[i]->getFd());
+	}
+	if (this->_fdPpalSocket != -1)
+	{
+		std::cout << "Server [" << this->_fdPpalSocket << "] Disconnected" << std::endl;
+		close(this->_fdPpalSocket);
+	}
 }
 
 void Server::_serverLoop()
@@ -224,7 +257,9 @@ void Server::_acceptNewClient()
 
 void Server::_clearClient(const int fd)
 {
-
+	_removeClientFromChannels(fd);
+	_removeClientFromServer(fd);
+	_removeClientFd(fd);
 }
 
 void Server::_receiveNewData(const int fd)

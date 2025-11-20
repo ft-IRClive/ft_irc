@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:22:46 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/20 15:40:40 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/20 17:26:23 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ class Server
 		bool	_isClientInAnyChannel(const int fd);
 		bool	_clientIsReadyToLogin(const int fd); //If PASS + NICK + USER was send
 		bool	_isValidNickname(const std::string& nickname); //IRC rules
-		bool	_isNicknameInUse(const int fd, const std::string& nickname);
+		bool	_isNicknameInUse(const int fd, const std::string& username);
 
 		//Command handler
 		void	_handlerClientJoin(const std::string &buffer, const int fd);
