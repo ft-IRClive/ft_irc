@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:22:46 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/20 17:26:23 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/23 13:26:32 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,16 +75,16 @@ class Server
 
 		std::string	_getHostname();
 
-		void	_isValidPort(const std::string& port); //Between 1 and 65535
+		void	_isValidPort(const std::string &port); //Between 1 and 65535
 		bool	_isClientInAnyChannel(const int fd);
 		bool	_clientIsReadyToLogin(const int fd); //If PASS + NICK + USER was send
-		bool	_isValidNickname(const std::string& nickname); //IRC rules
-		bool	_isNicknameInUse(const int fd, const std::string& username);
+		bool	_isValidNickname(const std::string &nickname); //IRC rules
+		bool	_isNicknameInUse(const int fd, const std::string &username);
 
 		//Command handler
 		void	_handlerClientJoin(const std::string &buffer, const int fd);
 		void	_handlerClientQuit(const std::string &buffer, const int fd);
-		void	_handlerClient_part(const std::string &buffer, const int fd);
+		void	_handlerClientPart(const std::string &buffer, const int fd);
 		void	_handlerClientMode(const std::string &buffer, const int fd);
 		void	_handlerClientKick(const std::string &buffer, const int fd);
 		void	_handlerClientTopic(const std::string &buffer, const int fd);
@@ -108,6 +108,7 @@ class Server
 
 		void						_executeCommand(const std::string buffer, const int fd);
 		std::string					_cleanseBuffer(const std::string &buffer, const std::string &chars_to_remove);
+		std::vector<std::string>	_splitBuffer(const std::string &buffer, const std::string &delimiter);
 
 		Client*		_getClient(const int fd);
 		Client*		_getClient(const std::string nickname);
