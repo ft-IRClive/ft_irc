@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:22:46 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/23 13:26:32 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/24 15:36:44 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,13 @@ class Server
 {
 	private:
 		//To join the command and the function than handler this command
-		struct command_handler
+		struct commandHandler
 		{
 			std::string	command;
 			void (Server::*handler)(const std::string&, const int);
 		};
 		static const int				_commandListSize = 16;
-		static const command_handler	_commandList[_commandListSize];
+		static const commandHandler	_commandList[_commandListSize];
 
 		int							_port;
 		std::string					_passwd;
@@ -93,6 +93,7 @@ class Server
 		void	_handlerClientNickname(const std::string &nickname, const int fd);
 		void	_handlerClientUsername(const std::string &username, const int fd);
 		void	_handlerClientPassword(const std::string &password, const int fd);
+		void	_handlerClientWho(const std::string &password, const int fd);
 
 		//Signal handler
 		static void	_signalHandler(const int signum);
@@ -119,6 +120,9 @@ class Server
 		void		_removeClientFd(const int fd);
 		void		_removeClientFromChannels(const int fd);
 		void		_removeClientFromServer(const int fd);
+
+		void		_broadcastToAll(const std::string &msg, int exclude_fd = -1);
+		void		_broadcastToChannel(const std::string &channelName, const std::string &msg, int exclude_fd = -1);
 
 	public:
 		Server(void);

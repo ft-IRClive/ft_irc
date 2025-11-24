@@ -6,11 +6,26 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:12:39 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/23 13:18:44 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/24 15:36:49 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/Server.hpp"
+
+const Server::commandHandler Server::_commandList[_commandListSize] = {
+	{"INVITE", &Server::_handlerClientInvite},
+	{"JOIN", &Server::_handlerClientJoin},
+	{"KICK", &Server::_handlerClientKick},
+	{"MODE", &Server::_handlerClientMode},
+	{"NICK", &Server::_handlerClientNickname},
+	{"PART", &Server::_handlerClientPart},
+	{"PRIVMSG", &Server::_handlerClientPrivmsg},
+	{"PASS", &Server::_handlerClientPassword},
+	{"QUIT", &Server::_handlerClientQuit},
+	{"TOPIC", &Server::_handlerClientTopic},
+	{"USER", &Server::_handlerClientUsername},
+	{"WHO", &Server::_handlerClientWho},
+};
 
 Server::Server(void)
 {
@@ -396,12 +411,6 @@ void Server::_executeCommand(const std::string buffer, const int fd)
 	parameters = splitted_buffer[1]; //parameters
 	for (size_t i = 0; i < this->_commandListSize; i++)
 	{
-		if (command == "WHO")
-		{
-			cmd_executed = true;
-			//Falta implementar este comando
-			break;
-		}
 		if (command == this->_commandList[i].command)
 		{
 			(this->*_commandList[i].handler)(parameters, fd);
@@ -508,5 +517,57 @@ void Server::_removeClientFromServer(const int fd)
 			this->_clients.erase(i);
 			break;
 		}
+	}
+}
+
+/**
+ * @brief Function used to send messages to everyone.
+ *
+ * @param msg
+ * @param exclude_fd
+ */
+void Server::_broadcastToAll(const std::string &msg, int exclude_fd)
+{
+	Client	*client;
+	int		fd_client;
+
+	for (size_t i = 0; i < this->_clients.size(); i++)
+	{
+		client = this->_clients[i];
+		if (!client)
+			continue;
+		fd_client = client->getFd();
+		if (fd_client == exclude_fd)
+			continue;
+		_sendResponse(fd_client, msg);
+	}
+}
+
+/**
+ * @brief Function used for JOIN and PRIVATEMMSG.
+ *
+ * @param channelName
+ * @param msg
+ * @param exclude_fd
+ */
+void Server::_broadcastToChannel(const std::string &channelName, const std::string &msg, int exclude_fd)
+{
+	Channel	*channel = _getChannel(channelName);
+	Client	*c;
+	int		fd_client;
+
+	if (!channel)
+		return;
+	//Esta función debe estar en el Channel
+	std::vector<Client*> clients = channel->getChannelClients();
+	for (size_t i = 0; i < clients.size(); i++)
+	{
+		c = clients[i];
+		if (!c)
+			continue;
+		fd_client = c->getFd();
+		if (fd_client == exclude_fd)
+			continue;
+		_sendResponse(fd_client, msg);
 	}
 }
