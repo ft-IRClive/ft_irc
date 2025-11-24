@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
+/*   By: claudia <claudia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:22:17 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/20 17:03:25 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/24 10:58:02 by claudia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ class Client
 		bool						_isAuthenticated;
 		std::string					_nname;
 		std::string					_uname;
+		std::string					_realName;
 		std::string					_pswd;
 		std::string					_ipAddr;
 		std::string					_buffer;
@@ -46,6 +47,7 @@ class Client
 		bool						getIsAuthenticated() const;
 		std::string					getNname() const;
 		std::string					getUname() const;
+		std::string					getRealName()const;
 		std::string					getPswd() const;
 		std::string					getIpAddr() const;
 		std::string					getBuffer() const;
@@ -58,6 +60,7 @@ class Client
 		void	setIsAuthenticated(bool isAuthenticated);
 		void	setNname(const std::string &nname);
 		void	setUname(const std::string &uname);
+		void	setRealName(const std::string &realName);
 		void	setPswd(const std::string &pswd);
 		void	setIpAddr(const std::string &ipAddr);
 		void	setBuffer(const std::string &buffer);

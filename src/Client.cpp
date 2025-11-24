@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
+/*   By: claudia <claudia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:12:25 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/20 17:03:21 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/24 10:59:45 by claudia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,11 @@ std::string Client:: getNname() const
 std::string Client:: getUname() const
 {
 	return (this->_uname);
+}
+
+std::string Client::getRealName() const
+{
+	return (this -> _realName);
 }
 
 std::string Client:: getPswd() const
@@ -109,6 +114,11 @@ void Client:: setNname(const std::string &nname)
 void Client:: setUname(const std::string &uname)
 {
 	this->_uname = uname;
+}
+
+void Client::setRealName(const std::string &realName)
+{
+	this -> _realName = realName;
 }
 void Client:: setPswd(const std::string &pswd)
 {
