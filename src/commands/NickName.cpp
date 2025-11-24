@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NickName.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
+/*   By: claudia <claudia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:16:41 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/24 15:00:49 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/24 15:12:41 by claudia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,7 @@ void Server::_handlerClientNickname(const std::string &nickname, const int fd)
 	if (_clientIsReadyToLogin(fd))
 	{
 		client->setIsLogged(fd);
-		//Falta el RPL_CONNECTED
-		//_sendResponse(fd, RPL_CONNECTED(_getHostname(), client->getNname(), client->getHostName()));
+		_sendResponse(fd, RPL_WELCOME(_getHostname(), client->getNname(), client->getHostName()));
 		_replyCode = 001;
 		return ;
 	}
