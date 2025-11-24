@@ -6,14 +6,18 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:18:27 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/24 15:00:32 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/24 15:38:32 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/Server.hpp"
 
-// registers user basic info and indicates wether the username has been set
-
+/**
+ * @brief Registers user basic info and indicates wether the username has been set
+ *
+ * @param username
+ * @param fd
+ */
 void Server::_handlerClientUsername(const std::string &username, const int fd)
 {
 	Client	*client = _getClient(fd);

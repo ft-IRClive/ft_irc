@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:22:46 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/24 15:36:44 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/24 15:40:55 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ class Server
 			std::string	command;
 			void (Server::*handler)(const std::string&, const int);
 		};
-		static const int				_commandListSize = 16;
+		static const int			_commandListSize = 16;
 		static const commandHandler	_commandList[_commandListSize];
 
 		int							_port;

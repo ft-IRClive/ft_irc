@@ -3,18 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   NickName.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: claudia <claudia@student.42.fr>            +#+  +:+       +#+        */
+/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:16:41 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/24 15:12:41 by claudia          ###   ########.fr       */
+/*   Updated: 2025/11/24 15:39:24 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Server.hpp"
-#include "Replies.hpp"
+#include "../../inc/Server.hpp"
+#include "../../inc/Replies.hpp"
 
-// stablish or change username
-
+/**
+ * @brief Stablish or change username
+ *
+ * @param nickname
+ * @param fd
+ */
 void Server::_handlerClientNickname(const std::string &nickname, const int fd)
 {
 	Client	*client = _getClient(fd);
