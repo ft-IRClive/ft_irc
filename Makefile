@@ -1,9 +1,9 @@
 NAME = ircserve
 
 SRC = src/Channel.cpp src/Client.cpp src/main.cpp src/Server.cpp\
-		src/commands/Invite.cpp src/commands/Join.cpp src/commands/Kick.cpp src/commands/Mode.cpp\
-		src/commands/Nick.cpp src/commands/Part.cpp src/commands/Pass.cpp src/commands/PrivateMsg.cpp\
-		src/commands/Quit.cpp src/commands/Topic.cpp src/commands/User.cpp
+		src/commands/InviteChannel.cpp src/commands/JoinChannel.cpp src/commands/Kick.cpp src/commands/Mode.cpp\
+		src/commands/NickName.cpp src/commands/Part.cpp src/commands/Pwsd.cpp src/commands/PrivateMsg.cpp\
+		src/commands/Quit.cpp src/commands/Topic.cpp src/commands/UserName.cpp
 OBJ_DIR = obj
 OBJ = $(SRC:%.cpp=$(OBJ_DIR)/%.o)
 CC = c++
