@@ -6,12 +6,15 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:22:46 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/25 15:12:01 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/25 17:35:51 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
 #define SERVER_HPP
+
+#define SPACE " "
+#define CRLF "\r\n"
 
 #include <iostream>
 #include <sstream>

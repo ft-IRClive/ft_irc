@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:12:39 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/25 17:15:29 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/25 17:35:46 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -346,7 +346,7 @@ void Server::_receiveNewData(const int fd)
 		buffer[bytes] = '\0';
 		cli->appendToBuffer(buffer); //Because the data can come in parts
 		//If there is an end of line -> command complete
-		if (cli->getBuffer().find_first_of("\r\n") != std::string::npos)
+		if (cli->getBuffer().find_first_of(CRLF) != std::string::npos)
 		{
 			_executeCommand(cli->getBuffer(), fd);
 			cli->clearBuffer();
@@ -403,7 +403,7 @@ void Server::_executeCommand(const std::string buffer, const int fd)
 	cmd_executed = false;
 	if (buffer.empty())
 		return;
-	clean_buffer = _cleanseBuffer(buffer, "\r\n"); //Delete the \r and \n from the line
+	clean_buffer = _cleanseBuffer(buffer, CRLF); //Delete the \r and \n from the line
 	splitted_buffer = _splitBuffer(clean_buffer, "\t");
 	if (splitted_buffer.empty())
 		return;
