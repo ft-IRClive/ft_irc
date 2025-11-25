@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:22:46 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/24 15:40:55 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/25 15:12:01 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ class Server
 		void	_handlerClientNickname(const std::string &nickname, const int fd);
 		void	_handlerClientUsername(const std::string &username, const int fd);
 		void	_handlerClientPassword(const std::string &password, const int fd);
-		void	_handlerClientWho(const std::string &password, const int fd);
+		void	_handlerClientWho(const std::string &buffer, const int fd);
 
 		//Signal handler
 		static void	_signalHandler(const int signum);

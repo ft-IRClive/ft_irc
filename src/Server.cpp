@@ -6,11 +6,13 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:12:39 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/24 15:36:49 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/25 16:58:47 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/Server.hpp"
+
+bool Server::_signal = true;
 
 const Server::commandHandler Server::_commandList[_commandListSize] = {
 	{"INVITE", &Server::_handlerClientInvite},
@@ -38,7 +40,6 @@ Server::Server(void)
 	this->_fdsPoll = std::vector<struct pollfd>();
 	memset(&_confSocket, 0, sizeof(_confSocket));
 	this->_replyCode = 0;
-	this->_signal = false;
 }
 
 Server::~Server()
@@ -95,7 +96,7 @@ std::string	toupper(const std::string &str)
 {
 	std::string	s;
 
-	for (int i = 0; i < str.size(); i++)
+	for (size_t i = 0; i < str.size(); i++)
 	{
 		s[i] = std::toupper(str[i]);
 	}
@@ -129,14 +130,13 @@ bool Server::_isClientInAnyChannel(const int fd)
 {
 	Client	*client = this->_getClient(fd);
 
-	//Esta función debe estar en el Channel
-	/*for (std::vector<Channel*>::iterator i = this->_channels.begin(); i != this->_channels.end(); i++)
+	for (std::vector<Channel*>::iterator i = this->_channels.begin(); i != this->_channels.end(); i++)
 	{
 		if ((*i)->hasClient(client))
 		{
 			return (true);
 		}
-	}*/
+	}
 	return (false);
 }
 
@@ -418,9 +418,8 @@ void Server::_executeCommand(const std::string buffer, const int fd)
 			break;
 		}
 	}
-	//El ERR_CMDNOTFOUND debe estar en Replies
-	/*if (!cmd_executed)
-		_sendResponse(fd, ERR_CMDNOTFOUND(command));*/
+	if (!cmd_executed)
+		_sendResponse(fd, ERR_CMDNOTFOUND(command));
 }
 
 std::string Server::_cleanseBuffer(const std::string &buffer, const std::string &chars_to_remove)
@@ -472,11 +471,10 @@ Channel *Server::_getChannel(const std::string &channel_name)
 {
 	for (size_t i = 0; i < this->_channels.size(); i++)
 	{
-		//Esta función debe estar en el canal
-		/*if (channel_name == this->_clients[i]->get_channel_name())
+		if (channel_name == this->_channels[i]->getChName())
 		{
 			return (this->_channels[i]);
-		}*/
+		}
 	}
 	return (NULL);
 }
@@ -500,16 +498,15 @@ void Server::_removeClientFromChannels(const int fd)
 {
 	Client	*client = _getClient(fd);
 
-	//Esta función debe estar en el canal
-	/*for(std::vector<Channel *>::iterator i = this->_channels.begin(); i != this->_channels.end(); i++)
+	for(std::vector<Channel *>::iterator i = this->_channels.begin(); i != this->_channels.end(); i++)
 	{
 		(*i)->removeChannelClient(client);
-	}*/
+	}
 }
 
 void Server::_removeClientFromServer(const int fd)
 {
-	for (std::vector<Client *>::iterator i = this->_clients.begin(); i != this->_clients.end(); ++i)
+	for (std::vector<Client *>::iterator i = this->_clients.begin(); i != this->_clients.end(); i++)
 	{
 		if ((*i)->getFd() == fd)
 		{
@@ -559,7 +556,7 @@ void Server::_broadcastToChannel(const std::string &channelName, const std::stri
 	if (!channel)
 		return;
 	//Esta función debe estar en el Channel
-	std::vector<Client*> clients = channel->getChannelClients();
+	std::vector<Client*> clients = channel->getChClients();
 	for (size_t i = 0; i < clients.size(); i++)
 	{
 		c = clients[i];

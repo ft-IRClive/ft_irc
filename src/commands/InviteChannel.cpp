@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:15:41 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/24 14:59:25 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/25 15:10:50 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,5 +14,6 @@
 
 void Server::_handlerClientInvite(const std::string &buffer, const int fd)
 {
-
+	(void)buffer;
+	(void)fd;
 }

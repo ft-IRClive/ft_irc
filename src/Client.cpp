@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: claudia <claudia@student.42.fr>            +#+  +:+       +#+        */
+/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:12:25 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/24 10:59:45 by claudia          ###   ########.fr       */
+/*   Updated: 2025/11/25 16:58:42 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,11 @@ Client::Client(int fd)
 	this->_ipAddr = "";
 	this->_buffer = "";
 	this->_channelsInvited = std::vector<std::string>();
+}
+
+Client::~Client()
+{
+
 }
 
 int Client::getFd() const
@@ -136,7 +141,7 @@ void Client:: setBuffer(const std::string &buffer)
 
 bool Client:: isChannelInvited(const std::string &channel) const
 {
-	for (size_t i = 0; i < this->_channelsInvited.size(); ++i)
+	for (size_t i = 0; i < this->_channelsInvited.size(); i++)
 	{
 		if (this->_channelsInvited[i] == channel)
 			return (true);
@@ -152,11 +157,11 @@ void Client:: addChannelInvited(const std::string &channel)
 
 void Client::removeChannelInvited(const std::string &channel)
 {
-	for (std::vector<std::string>::iterator it = this->_channelsInvited.begin(); it != this->_channelsInvited.end(); ++it)
+	for (std::vector<std::string>::iterator i = this->_channelsInvited.begin(); i != this->_channelsInvited.end(); i++)
 	{
-		if (*it == channel)
+		if (*i == channel)
 		{
-			this->_channelsInvited.erase(it);
+			this->_channelsInvited.erase(i);
 			break;
 		}
 	}
