@@ -6,7 +6,7 @@
 /*   By: claudia <claudia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:22:03 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/25 11:04:00 by claudia          ###   ########.fr       */
+/*   Updated: 2025/11/25 11:49:28 by claudia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,18 @@ class Channel
 
 	public:
 		Channel();
-		~Channel();
 		Channel(std::string name);
+		~Channel();
 		
 		int getClientsSize(void) const;
+		bool getRestrictedTopic(void) const;
 		std::string getChName(void) const;
 		std::string getChKey(void) const;
+		std::string getChannelNames(void) const;
 		std::string getChTopic(void) const;
 		std::vector<Client*> getChClients(void);
 		std::vector<Client*> getOperatorClients(void);
-		bool restrictedTopic(void) const;
-
+		
 		void setLimit(int limit);
 		void setInvite(void);
 		void setRestrtictedTopic();
@@ -64,7 +65,7 @@ class Channel
 
 	private:
 		int _limit; // user limit
-		bool _has_key; // mode +k
+		bool _hasKey; // mode +k
 		bool _invite; // mode +i
 		bool _restrictedTopic; // mode +t -> permission to change topic
 		std::string _key; // key del modo +k
