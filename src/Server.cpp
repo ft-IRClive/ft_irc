@@ -6,13 +6,13 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:12:39 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/25 16:58:47 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/25 17:15:29 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/Server.hpp"
 
-bool Server::_signal = true;
+bool Server::_signal = false;
 
 const Server::commandHandler Server::_commandList[_commandListSize] = {
 	{"INVITE", &Server::_handlerClientInvite},
