@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
+/*   By: claudia <claudia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:11:42 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/25 16:58:38 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/26 10:47:10 by claudia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,28 +14,26 @@
 
 Channel::Channel()
 {
-	this->_limit = -1; //No limit
+	this->_limit = -1;
 	this->_hasKey = false;
 	this->_invite = false;
 	this->_restrictedTopic = false;
 	this->_key = "";
 	this->_name = "";
 	this->_topic = "";
-	//this->_createdAt = "";
 	this->_clients = std::vector<Client*>();
 	this->_operator_clients = std::vector<Client*>();
 }
 
 Channel::Channel(std::string name)
 {
-	this->_limit = -1; //No limit
+	this->_limit = -1;
 	this->_hasKey = false;
 	this->_invite = false;
 	this->_restrictedTopic = false;
 	this->_key = "";
 	this->_name = name;
 	this->_topic = "";
-	//this->_createdAt = "";
 	this->_clients = std::vector<Client*>();
 	this->_operator_clients = std::vector<Client*>();
 }

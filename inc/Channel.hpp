@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
+/*   By: claudia <claudia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:22:03 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/25 14:46:27 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/26 10:47:15 by claudia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ class Channel
 		void	part(Client *client);
 		void	quit(Client *client);
 		void	invite(Client *client);
-		void	broadcast(Client *sender, std::string target, std::string msg);
+		// void	broadcast(Client *sender, std::string target, std::string msg); -> donde esta
 
 		bool	hasKey(void) const;
 		bool	hasClient(Client *client);
@@ -71,7 +71,6 @@ class Channel
 		std::string				_key; //Key del modo +k
 		std::string				_name;
 		std::string				_topic;
-		//std::string _createdAt; optional
 		std::vector<Client*>	_clients;
 		std::vector<Client*>	_operator_clients; //Kick, invite
 };
