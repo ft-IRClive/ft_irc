@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:12:39 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/25 17:35:46 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/27 19:23:13 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ Server::~Server()
 	this->_clients.clear();
 	for (j = this->_channels.begin(); j != this->_channels.end(); j++)
 	{
-		delete *i;
+		delete *j;
 	}
 	this->_channels.clear();
 }
@@ -96,10 +96,9 @@ std::string	toupper(const std::string &str)
 {
 	std::string	s;
 
-	for (size_t i = 0; i < str.size(); i++)
-	{
-		s[i] = std::toupper(str[i]);
-	}
+	s.reserve(str.size());
+	for (size_t i = 0; i < str.size(); ++i)
+		s.push_back(static_cast<char>(std::toupper(static_cast<unsigned char>(str[i]))));
 	return (s);
 }
 
@@ -496,11 +495,15 @@ void Server::_removeClientFd(const int fd)
 
 void Server::_removeClientFromChannels(const int fd)
 {
-	Client	*client = _getClient(fd);
+	Client					*client = _getClient(fd);
+	std::vector<Channel*>	channelsCopy = this->_channels;
 
-	for(std::vector<Channel *>::iterator i = this->_channels.begin(); i != this->_channels.end(); i++)
+	if (!client)
+		return;
+	for (size_t i = 0; i < channelsCopy.size(); ++i)
 	{
-		(*i)->removeChannelClient(client);
+		if (channelsCopy[i])
+			channelsCopy[i]->removeChannelClient(client);
 	}
 }
 
