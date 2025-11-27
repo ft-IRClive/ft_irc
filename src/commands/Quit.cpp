@@ -6,29 +6,43 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:18:08 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/26 17:03:41 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/27 16:06:54 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/Server.hpp"
 
-void Server::_handlerClientQuit(const std::string &buffer, const int fd)
+void Server::_handlerClientQuit(const std::string &params, const int fd)
 {
-	Client*	client = _getClient(fd);
-	Channel	*channel;
+	Client*		client = _getClient(fd);
+	std::string	reason;
 
-	for (std::vector<Channel*>::iterator i = _channels.begin(); i != _channels.end(); i++)
+	if (!client)
+		return;
+	if (!params.empty())
 	{
-		channel = *i;
-		if (channel->hasClient(client))
+		if (params[0] == ':')
+			reason = params.substr(1);
+		else
+			reason = params;
+	}
+	if (reason.empty())
+		reason = "Client Quit";
+
+	std::string quitMsg = ":" + client->getNname() + " QUIT :" + reason;
+
+	for (size_t i = 0; i < _channels.size(); ++i)
+	{
+		Channel* ch = _channels[i];
+		if (!ch)
+			continue;
+		if (ch->hasClient(client))
 		{
-			channel->quit(client);
+			_broadcastToAll(quitMsg, fd);
+			ch->quit(client);
 		}
 	}
 
-	_sendResponse(fd, RPL_QUITMESSAGE(client->getNname()));
-	_replyCode = 301;
-
-	std::cout << "Client <" << fd << "> Disconnected" << std::endl;
+	std::cout << "Client <" << fd << "> disconnected (" << reason << ")" << std::endl;
 	_clearClient(fd);
 }

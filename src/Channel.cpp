@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: claudia <claudia@student.42.fr>            +#+  +:+       +#+        */
+/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:11:42 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/26 10:47:10 by claudia          ###   ########.fr       */
+/*   Updated: 2025/11/27 16:34:39 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,9 +103,21 @@ void Channel::setInvite()
 	this->_invite = true;
 }
 
+void Channel::setRestrictedTopic()
+{
+	this->_restrictedTopic = true;
+}
+
 void Channel::setKey(std::string key)
 {
 	this->_key = key;
+}
+
+void Channel::setChannelOperator(Client* client)
+{
+	client->setOp(true);
+	this->_operator_clients.push_back(client);
+	return;
 }
 
 void Channel::removeLimit(void)
@@ -121,6 +133,11 @@ void Channel::removeKey(void)
 void Channel::removeInvite(void)
 {
 	this->_invite = false;
+}
+
+void Channel::removeRestrictedTopic(void)
+{
+	this->_restrictedTopic = false;
 }
 
 void Channel::removeChannelOperator(Client *client)

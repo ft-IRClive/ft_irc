@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:15:56 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/26 18:28:35 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/27 15:59:27 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,10 @@ void Server::_handlerClientJoin(const std::string &buffer, const int fd)
 		channel->join(client);
 		channel->setChannelOperator(client);
 
-		/*channel->broadcast(
+		//When you create the channel and the client join the channel for first time
+		_broadcastToChannel(channelName,
 			RPL_JOINMSG(client->getNname(), client->getHostName(), channelName),
-			NULL
-		);*/
+			-1);
 
 		if (channel->getChTopic().empty())
 			_sendResponse(fd, RPL_NOTOPIC(client->getNname(), channelName));
@@ -86,10 +86,10 @@ void Server::_handlerClientJoin(const std::string &buffer, const int fd)
 	channel->join(client);
 	client->removeChannelInvited(channelName);
 
-	/*channel->broadcast(
+	//When a client join an existing channel
+	_broadcastToChannel(channelName,
 		RPL_JOINMSG(client->getNname(), client->getHostName(), channelName),
-		NULL
-	);*/
+		-1);
 
 	if (channel->getChTopic().empty())
 		_sendResponse(fd, RPL_NOTOPIC(client->getNname(), channelName));

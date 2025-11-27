@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: claudia <claudia@student.42.fr>            +#+  +:+       +#+        */
+/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:22:03 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/26 10:47:15 by claudia          ###   ########.fr       */
+/*   Updated: 2025/11/27 16:29:35 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ class Channel
 
 		void	setLimit(int limit);
 		void	setInvite(void);
-		void	setRestrtictedTopic();
+		void	setRestrictedTopic();
 		void	setTopic(std::string topic);
 		void	setKey(std::string pwsd);
 		void	setChannelOperator(Client *client);
