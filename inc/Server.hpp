@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:22:46 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/25 17:35:51 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/28 17:43:51 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ class Server
 		bool	_isNicknameInUse(const int fd, const std::string &username);
 
 		//Command handler
+		void	_handlerClientCap(const std::string &buffer, const int fd);
 		void	_handlerClientJoin(const std::string &buffer, const int fd);
 		void	_handlerClientQuit(const std::string &buffer, const int fd);
 		void	_handlerClientPart(const std::string &buffer, const int fd);

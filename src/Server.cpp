@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:12:39 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/27 19:23:13 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/28 17:52:01 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 bool Server::_signal = false;
 
 const Server::commandHandler Server::_commandList[_commandListSize] = {
+	{"CAP", &Server::_handlerClientCap},
 	{"INVITE", &Server::_handlerClientInvite},
 	{"JOIN", &Server::_handlerClientJoin},
 	{"KICK", &Server::_handlerClientKick},
@@ -332,31 +333,63 @@ void Server::_receiveNewData(const int fd)
 
 	std::memset(buffer, 0, sizeof(buffer));
 	cli = _getClient(fd);
-	//recv() reads the data sent by the client
-	//returns > 0 if there are data, 0 is the client close the connection and < 0 if error
+	if (!cli)
+		return;
+
+	// recv() lee datos del cliente
 	bytes = recv(fd, buffer, sizeof(buffer) - 1, 0);
 	if (bytes <= 0)
 	{
 		std::cout << "Client <" << fd << "> Disconnected" << std::endl;
 		_clearClient(fd);
+		return;
 	}
-	else
+
+	buffer[bytes] = '\0';
+	cli->appendToBuffer(buffer); // agregamos lo recibido al buffer del cliente
+
+	// Trabajamos sobre una copia local del buffer para poder extraer líneas
+	std::string buf = cli->getBuffer();
+	size_t pos;
+
+	// Procesar todas las líneas completas (\n) que existan en buf
+	while ((pos = buf.find('\n')) != std::string::npos)
 	{
-		buffer[bytes] = '\0';
-		cli->appendToBuffer(buffer); //Because the data can come in parts
-		//If there is an end of line -> command complete
-		if (cli->getBuffer().find_first_of(CRLF) != std::string::npos)
-		{
-			_executeCommand(cli->getBuffer(), fd);
-			cli->clearBuffer();
-		}
+		// extraemos la línea (sin el '\n')
+		std::string line = buf.substr(0, pos);
+
+		// si la línea termina en '\r', quitarlo (por si los clientes usan \r\n)
+		if (!line.empty() && line[line.size() - 1] == '\r')
+			line.erase(line.size() - 1, 1);
+
+		// Si la línea no está vacía, ejecutamos comando
+		if (!line.empty())
+			_executeCommand(line, fd);
+
+		// borramos de buf la línea ya procesada + el '\n'
+		buf.erase(0, pos + 1);
 	}
+
+	// Ahora buf contiene la parte incompleta (sin '\n') — la preservamos
+	cli->clearBuffer();
+	if (!buf.empty())
+		cli->appendToBuffer(buf);
 }
 
 void Server::_sendResponse(const int fd, const std::string &response)
 {
-	std::cout << "Response:\n" << response;
-	if (send(fd, response.c_str(), response.size(), 0) == -1)
+	if (response.empty())
+	{
+		std::cerr << "[_sendResponse] WARNING: trying to send empty response to fd " << fd << std::endl;
+		return;
+	}
+
+	std::string	out = response;
+	if (out.size() < 2 || out.substr(out.size() - 2) != "\r\n")
+		out += "\r\n";
+
+	std::cerr << ">> Sending to fd " << fd << ":\n" << out;
+	if (send(fd, out.c_str(), out.size(), 0) == -1)
 		std::cerr << "Response send() failed" << std::endl;
 }
 
@@ -403,10 +436,13 @@ void Server::_executeCommand(const std::string buffer, const int fd)
 	if (buffer.empty())
 		return;
 	clean_buffer = _cleanseBuffer(buffer, CRLF); //Delete the \r and \n from the line
-	splitted_buffer = _splitBuffer(clean_buffer, "\t");
+	splitted_buffer = _splitBuffer(clean_buffer, SPACE);
 	if (splitted_buffer.empty())
 		return;
-	command = toupper(splitted_buffer[0]); //Command in uppercase
+	//Command in uppercase
+	command = splitted_buffer[0];
+	for (size_t i = 0; i < command.size(); ++i)
+		command[i] = static_cast<char>(std::toupper(command[i]));
 	parameters = splitted_buffer[1]; //parameters
 	for (size_t i = 0; i < this->_commandListSize; i++)
 	{

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: claudia <claudia@student.42.fr>            +#+  +:+       +#+        */
+/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:16:08 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/28 15:23:08 by claudia          ###   ########.fr       */
+/*   Updated: 2025/11/28 15:34:06 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void Server::_handlerClientKick(const std::string &buffer, const int fd)
 {
-	Client *client = _getClient(fd);
+	Client	*client = _getClient(fd);
 
 	if (!client->getIsLogged())
 	{
@@ -31,7 +31,8 @@ void Server::_handlerClientKick(const std::string &buffer, const int fd)
 	std::string channelName = params[1];
 	std::string targetNickname = params[2];
 	std::string comment = params[0];
-	Channel *channel = _getChannel(channelName);
+
+	Channel	*channel = _getChannel(channelName);
 	if (!channel)
 	{
 		_sendResponse(fd, ERR_NOSUCHCHANNEL(channelName));
@@ -47,7 +48,8 @@ void Server::_handlerClientKick(const std::string &buffer, const int fd)
 		_sendResponse(fd, ERR_CHANOPRIVSNEEDED(channelName));
 		return ;
 	}
-	Client *targetClient = _getClient(targetNickname);
+
+	Client	*targetClient = _getClient(targetNickname);
 	if (!targetClient)
 	{
 		_sendResponse(fd, ERR_NONICKNAME(targetNickname));
@@ -58,8 +60,10 @@ void Server::_handlerClientKick(const std::string &buffer, const int fd)
 		_sendResponse(fd, ERR_USERNOTINCHANNEL(targetNickname, channelName));
 		return ;
 	}
-	std::string kickMsg = RPL_KICK(client->getHostName(), channelName, client->getNname(), targetClient->getNname(), comment);
-	std::vector<Client*> members = channel->getChClients();
+
+	std::string				kickMsg = RPL_KICK(client->getHostName(), channelName, client->getNname(), targetClient->getNname(), comment);
+	std::vector<Client*>	members = channel->getChClients();
+
 	for (size_t i = 0; i < members.size(); ++i)
 		_sendResponse(members[i]->getFd(), kickMsg);
 	channel->kick(targetClient);
