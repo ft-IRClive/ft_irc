@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:22:03 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/27 16:29:35 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/29 16:54:53 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,9 +58,9 @@ class Channel
 		bool	hasKey(void) const;
 		bool	hasClient(Client *client);
 		bool	isChannelComplete(void) const;
-		bool	isChannelOperator(const int fd);
+		bool	isChannelOperator(const int fd) const;
 		bool	isChannelInviteOnly(void) const;
-		bool	isChannelOperator(std::string nickname);
+		bool	isChannelOperator(std::string nickname) const;
 		bool	isClientInChannel(std::string nickname);
 
 	private:

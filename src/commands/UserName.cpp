@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:18:27 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/29 12:09:15 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/29 15:45:13 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,21 +25,21 @@ void Server::_handlerClientUsername(const std::string &parameters, const int fd)
 
 	if (parameters.empty())
 	{
-		_sendResponse(fd, ERR_MISSINGPARAMS("USER"));
+		_sendResponse(fd, ERR_MISSINGPARAMS(_getHostname(), "USER"));
 		_replyCode = 461;
 		return;
 	}
 
 	if (!client || !client->getIsAuthenticated())
 	{
-		_sendResponse(fd, ERR_NOTREGISTERED("USER"));
+		_sendResponse(fd, ERR_NOTREGISTERED(_getHostname(), "USER"));
 		_replyCode = 451;
 		return;
 	}
 
 	if (!client->getUname().empty())
 	{
-		_sendResponse(fd, ERR_ALREADYREGISTERED(client->getNname()));
+		_sendResponse(fd, ERR_ALREADYREGISTERED(_getHostname(), client->getNname()));
 		_replyCode = 462;
 		return;
 	}
@@ -56,7 +56,7 @@ void Server::_handlerClientUsername(const std::string &parameters, const int fd)
 	//Validate username
 	if (username.empty())
 	{
-		_sendResponse(fd, ERR_MISSINGPARAMS("USER"));
+		_sendResponse(fd, ERR_MISSINGPARAMS(_getHostname(), "USER"));
 		_replyCode = 461;
 		return;
 	}

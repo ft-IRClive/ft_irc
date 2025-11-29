@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:11:42 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/27 16:34:39 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/29 17:03:48 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,12 +67,20 @@ std::string Channel::getChKey(void) const
 std::string Channel::getChannelNames(void) const
 {
 	std::string	names;
+	bool		first = true;
 
-	for(std::vector<Client*>::const_iterator i = this->_clients.begin(); i != this->_clients.end(); i++)
+	for (std::vector<Client*>::const_iterator i = this->_clients.begin(); i != this->_clients.end(); ++i)
 	{
+		if (!first)
+			names += " ";
+		first = false;
+
+		if (isChannelOperator((*i)->getFd()))
+			names += "@";
+
 		names += (*i)->getNname();
-		names += " ";
 	}
+
 	return (names);
 }
 
@@ -185,9 +193,9 @@ bool Channel::hasKey(void) const
 	return (this->_key != "");
 }
 
-bool Channel::isChannelOperator(std::string nickname)
+bool Channel::isChannelOperator(std::string nickname) const
 {
-	for(std::vector<Client*>::iterator i = this->_operator_clients.begin(); i != this->_operator_clients.end(); i++)
+	for(std::vector<Client*>::const_iterator i = this->_operator_clients.begin(); i != this->_operator_clients.end(); i++)
 	{
 		if ((*i)->getNname() == nickname)
 			return (true);
@@ -195,9 +203,9 @@ bool Channel::isChannelOperator(std::string nickname)
 	return (false);
 }
 
-bool Channel::isChannelOperator(const int fd)
+bool Channel::isChannelOperator(const int fd) const
 {
-	for(std::vector<Client*>::iterator i = this->_operator_clients.begin(); i != this->_operator_clients.end(); i++)
+	for(std::vector<Client*>::const_iterator i = this->_operator_clients.begin(); i != this->_operator_clients.end(); i++)
 	{
 		if ((*i)->getFd() == fd)
 			return (true);

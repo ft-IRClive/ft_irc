@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:17:18 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/26 16:59:22 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/29 15:44:34 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,12 @@ void Server::_handlerClientPart(const std::string &buffer, const int fd)
 
 	if (buffer.empty())
 	{
-		_sendResponse(fd, ERR_MISSINGPARAMS(client->getNname()));
+		_sendResponse(fd, ERR_MISSINGPARAMS(_getHostname(), client->getNname()));
 		_replyCode = 461;
 	}
 	else if (!client->getIsLogged())
 	{
-		_sendResponse(fd, ERR_NOTREGISTERED(client->getNname()));
+		_sendResponse(fd, ERR_NOTREGISTERED(_getHostname(), client->getNname()));
 		_replyCode = 451;
 	}
 	else
@@ -34,12 +34,12 @@ void Server::_handlerClientPart(const std::string &buffer, const int fd)
 
 		if (!channel)
 		{
-			_sendResponse(fd, ERR_NOSUCHCHANNEL(channelName));
+			_sendResponse(fd, ERR_NOSUCHCHANNEL(_getHostname(), channelName));
 			_replyCode = 403;
 		}
 		else if (!channel->hasClient(client))
 		{
-			_sendResponse(fd, ERR_NOTONCHANNEL(channelName));
+			_sendResponse(fd, ERR_NOTONCHANNEL(_getHostname(), channelName));
 			_replyCode = 442;
 		}
 		else

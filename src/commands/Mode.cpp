@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:16:24 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/27 16:31:30 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/29 16:47:56 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,7 @@ void Server::_handlerClientMode(const std::string &buffer, const int fd)
 	std::string			channelName, modeFlags, argument;
 
 	iss >> channelName >> modeFlags;
-	if (iss >> argument)
-	{
-		iss >> argument;
-	}
+	iss >> argument;
 
 	Client*		client = _getClient(fd);
 	Channel*	channel = _getChannel(channelName);
@@ -42,28 +39,35 @@ void Server::_handlerClientMode(const std::string &buffer, const int fd)
 
 	if (channelName.empty() || modeFlags.empty())
 	{
-		_sendResponse(fd, ERR_MISSINGPARAMS(client->getNname()));
+		_sendResponse(fd, ERR_MISSINGPARAMS(_getHostname(), client->getNname()));
 		_replyCode = 461;
 	}
 	else if (!channel)
 	{
-		_sendResponse(fd, ERR_NOSUCHCHANNEL(channelName));
+		_sendResponse(fd, ERR_NOSUCHCHANNEL(_getHostname(), channelName));
 		_replyCode = 403;
 	}
 	else if (!channel->isChannelOperator(client->getNname()))
 	{
-		_sendResponse(fd, ERR_CHANOPRIVSNEEDED(channelName));
+		_sendResponse(fd, ERR_CHANOPRIVSNEEDED(_getHostname(), channelName));
 		_replyCode = 482;
 	}
 	else if (!_processFlagsMode( modeFlags, channel, _getClient(argument), argument))
 	{
-		_sendResponse(fd, ERR_UNKNOWNMODE(client->getNname(), channel->getChName(), modeFlags[1]));
+		_sendResponse(fd, ERR_UNKNOWNMODE(_getHostname(), client->getNname(), channel->getChName(), modeFlags[1]));
 		_replyCode = 472;
 	}
 	else
 	{
-		_sendResponse(fd, RPL_UMODEIS(client->getNname(), client->getHostName(), channel->getChName(),
-					modeFlags[0], modeFlags[1], argument));
+		std::string argStr = argument.empty() ? "" : argument;
+		std::string modeMsg = RPL_CHANGEMODE(
+			client->getHostName(),
+			channel->getChName(),
+			modeFlags,
+			argStr
+		);
+
+		_broadcastToChannel(channelName, modeMsg, -1);
 		_replyCode = 200;
 	}
 }

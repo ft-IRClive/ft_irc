@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:18:08 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/27 16:06:54 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/29 15:29:31 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,6 @@ void Server::_handlerClientQuit(const std::string &params, const int fd)
 		}
 	}
 
-	std::cout << "Client <" << fd << "> disconnected (" << reason << ")" << std::endl;
+	std::cout << "Client <" << fd << "> Disconnected (" << reason << ")" << std::endl;
 	_clearClient(fd);
 }

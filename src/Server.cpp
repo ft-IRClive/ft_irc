@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:12:39 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/29 12:11:10 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/29 15:49:30 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -446,7 +446,7 @@ void Server::_executeCommand(const std::string buffer, const int fd)
 		}
 	}
 	if (!cmd_executed)
-		_sendResponse(fd, ERR_CMDNOTFOUND(command));
+		_sendResponse(fd, ERR_CMDNOTFOUND(_getHostname(), command));
 }
 
 std::string Server::_cleanseBuffer(const std::string &buffer, const std::string &chars_to_remove)
@@ -606,7 +606,7 @@ void Server::_broadcastToChannel(const std::string &channelName, const std::stri
 		if (!c)
 			continue;
 		fd_client = c->getFd();
-		if (fd_client == exclude_fd)
+		if (exclude_fd >= 0 && fd_client == exclude_fd)
 			continue;
 		_sendResponse(fd_client, msg);
 	}

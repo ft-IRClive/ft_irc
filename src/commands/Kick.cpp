@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:16:08 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/28 15:34:06 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/29 17:19:47 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,55 +16,71 @@ void Server::_handlerClientKick(const std::string &buffer, const int fd)
 {
 	Client	*client = _getClient(fd);
 
-	if (!client->getIsLogged())
+	if (!client || !client->getIsLogged())
 	{
-		_sendResponse(fd, ERR_NOTREGISTERED(client->getNname()));
-		_replyCode = 451;
-		return ;
+		_sendResponse(fd, ERR_NOTREGISTERED(_getHostname(), client->getNname()));
+		return;
 	}
-	std::vector<std::string> params = _splitBuffer(buffer, SPACE);
-	if (params.size() < 3)
+
+	std::istringstream iss(buffer);
+	std::string channelName, targetNickname, reason;
+
+	iss >> channelName >> targetNickname;
+	std::getline(iss >> std::ws, reason);
+
+	if (!reason.empty() && reason[0] == ':')
+		reason = reason.substr(1);
+
+	if (reason.empty())
+		reason = "No reason given";
+
+	if (channelName.empty() || targetNickname.empty())
 	{
-		_sendResponse(fd, ERR_MISSINGPARAMS(client->getNname()));
-		return ;
+		_sendResponse(fd, ERR_MISSINGPARAMS(_getHostname(), "KICK"));
+		return;
 	}
-	std::string channelName = params[1];
-	std::string targetNickname = params[2];
-	std::string comment = params[0];
 
 	Channel	*channel = _getChannel(channelName);
 	if (!channel)
 	{
-		_sendResponse(fd, ERR_NOSUCHCHANNEL(channelName));
-		return ;
-	}
-	if (!channel->hasClient(client))
-	{
-		_sendResponse(fd, ERR_NOTONCHANNEL(channelName));
-		return ;
-	}
-	if (!channel->isChannelOperator(client->getNname()))
-	{
-		_sendResponse(fd, ERR_CHANOPRIVSNEEDED(channelName));
-		return ;
-	}
-
-	Client	*targetClient = _getClient(targetNickname);
-	if (!targetClient)
-	{
-		_sendResponse(fd, ERR_NONICKNAME(targetNickname));
+		_sendResponse(fd, ERR_NOSUCHCHANNEL(_getHostname(), channelName));
 		return;
 	}
-	if (!channel->hasClient(targetClient))
+
+	if (!channel->hasClient(client))
 	{
-		_sendResponse(fd, ERR_USERNOTINCHANNEL(targetNickname, channelName));
-		return ;
+		_sendResponse(fd, ERR_NOTONCHANNEL(_getHostname(), channelName));
+		return;
 	}
 
-	std::string				kickMsg = RPL_KICK(client->getHostName(), channelName, client->getNname(), targetClient->getNname(), comment);
-	std::vector<Client*>	members = channel->getChClients();
+	if (!channel->isChannelOperator(client->getNname()))
+	{
+		_sendResponse(fd, ERR_CHANOPRIVSNEEDED(_getHostname(), channelName));
+		return;
+	}
 
-	for (size_t i = 0; i < members.size(); ++i)
-		_sendResponse(members[i]->getFd(), kickMsg);
+	Client *targetClient = _getClient(targetNickname);
+	if (!targetClient)
+	{
+		_sendResponse(fd, ERR_NOSUCHNICK(_getHostname(), targetNickname));
+		return;
+	}
+
+	if (!channel->hasClient(targetClient))
+	{
+		_sendResponse(fd, ERR_USERNOTINCHANNEL(_getHostname(), targetNickname, channelName));
+		return;
+	}
+
+	std::string kickMsg = RPL_KICK(
+		client->getHostName(),
+		channelName,
+		client->getNname(),
+		targetClient->getNname(),
+		reason
+	);
+
+	_broadcastToChannel(channelName, kickMsg, -1);
+
 	channel->kick(targetClient);
 }
