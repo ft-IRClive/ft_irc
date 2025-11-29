@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:16:41 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/24 15:39:24 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/29 11:52:43 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,8 @@ void Server::_handlerClientNickname(const std::string &nickname, const int fd)
 	client->setNname(nickname);
 	if (_clientIsReadyToLogin(fd))
 	{
-		client->setIsLogged(fd);
-		_sendResponse(fd, RPL_WELCOME(_getHostname(), client->getNname(), client->getHostName()));
-		_replyCode = 001;
+		client->setIsLogged(true);
+		_sendWelcome(client);
 		return ;
 	}
 	if (client->getIsLogged())

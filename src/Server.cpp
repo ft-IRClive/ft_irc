@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:12:39 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/28 17:52:01 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/29 12:11:10 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,10 @@ bool Server::_clientIsReadyToLogin(const int fd)
 {
 	Client	*client = this->_getClient(fd);
 
-	if (!client->getUname().empty() && !client->getNname().empty() && !client->getIsLogged())
+	if (!client)
+		return (false);
+	if (!client->getUname().empty() && !client->getNname().empty()
+			&& client->getIsAuthenticated() && !client->getIsLogged())
 		return (true);
 	return (false);
 }
@@ -336,7 +339,6 @@ void Server::_receiveNewData(const int fd)
 	if (!cli)
 		return;
 
-	// recv() lee datos del cliente
 	bytes = recv(fd, buffer, sizeof(buffer) - 1, 0);
 	if (bytes <= 0)
 	{
@@ -346,31 +348,22 @@ void Server::_receiveNewData(const int fd)
 	}
 
 	buffer[bytes] = '\0';
-	cli->appendToBuffer(buffer); // agregamos lo recibido al buffer del cliente
+	cli->appendToBuffer(buffer);
 
-	// Trabajamos sobre una copia local del buffer para poder extraer líneas
-	std::string buf = cli->getBuffer();
-	size_t pos;
+	std::string	buf = cli->getBuffer();
+	size_t		pos;
 
-	// Procesar todas las líneas completas (\n) que existan en buf
 	while ((pos = buf.find('\n')) != std::string::npos)
 	{
-		// extraemos la línea (sin el '\n')
-		std::string line = buf.substr(0, pos);
 
-		// si la línea termina en '\r', quitarlo (por si los clientes usan \r\n)
+		std::string line = buf.substr(0, pos);
 		if (!line.empty() && line[line.size() - 1] == '\r')
 			line.erase(line.size() - 1, 1);
-
-		// Si la línea no está vacía, ejecutamos comando
 		if (!line.empty())
 			_executeCommand(line, fd);
-
-		// borramos de buf la línea ya procesada + el '\n'
 		buf.erase(0, pos + 1);
 	}
 
-	// Ahora buf contiene la parte incompleta (sin '\n') — la preservamos
 	cli->clearBuffer();
 	if (!buf.empty())
 		cli->appendToBuffer(buf);
@@ -388,7 +381,6 @@ void Server::_sendResponse(const int fd, const std::string &response)
 	if (out.size() < 2 || out.substr(out.size() - 2) != "\r\n")
 		out += "\r\n";
 
-	std::cerr << ">> Sending to fd " << fd << ":\n" << out;
 	if (send(fd, out.c_str(), out.size(), 0) == -1)
 		std::cerr << "Response send() failed" << std::endl;
 }
@@ -556,6 +548,19 @@ void Server::_removeClientFromServer(const int fd)
 	}
 }
 
+void Server::_sendWelcome(Client* client)
+{
+	if (!client)
+		return;
+
+	std::string	nick = client->getNname().empty() ? "*" : client->getNname();
+	std::string	user = client->getUname().empty() ? "*" : client->getUname();
+	std::string	host = client->getIpAddr();
+	std::string	fullHost = user + "@" + host;
+	std::string	welcome = RPL_WELCOME(_getHostname(), nick, fullHost);
+	_sendResponse(client->getFd(), welcome);
+}
+
 /**
  * @brief Function used to send messages to everyone.
  *
@@ -594,7 +599,6 @@ void Server::_broadcastToChannel(const std::string &channelName, const std::stri
 
 	if (!channel)
 		return;
-	//Esta función debe estar en el Channel
 	std::vector<Client*> clients = channel->getChClients();
 	for (size_t i = 0; i < clients.size(); i++)
 	{

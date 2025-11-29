@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:22:46 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/28 17:43:51 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/11/29 12:07:17 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@
 class Server
 {
 	private:
-		//To join the command and the function than handler this command
+		//To join the command and the function that handler this command
 		struct commandHandler
 		{
 			std::string	command;
@@ -124,6 +124,8 @@ class Server
 		void		_removeClientFd(const int fd);
 		void		_removeClientFromChannels(const int fd);
 		void		_removeClientFromServer(const int fd);
+
+		void		_sendWelcome(Client* client);
 
 		void		_broadcastToAll(const std::string &msg, int exclude_fd = -1);
 		void		_broadcastToChannel(const std::string &channelName, const std::string &msg, int exclude_fd = -1);
