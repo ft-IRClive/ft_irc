@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
+/*   By: claudia <claudia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:12:39 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/29 15:49:30 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/01 13:55:51 by claudia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -553,11 +553,19 @@ void Server::_sendWelcome(Client* client)
 	if (!client)
 		return;
 
-	std::string	nick = client->getNname().empty() ? "*" : client->getNname();
-	std::string	user = client->getUname().empty() ? "*" : client->getUname();
-	std::string	host = client->getIpAddr();
-	std::string	fullHost = user + "@" + host;
-	std::string	welcome = RPL_WELCOME(_getHostname(), nick, fullHost);
+	std::string nick     = client->getNname().empty() ? "*" : client->getNname();
+	std::string user     = client->getUname().empty() ? "*" : client->getUname();
+	std::string host     = client->getIpAddr();
+	std::string realname = client->getRealName().empty() ? "*" : client->getRealName();
+
+	std::string welcome = RPL_WELCOME(
+		_getHostname(),
+		nick,
+		user,
+		host,
+		realname
+	);
+
 	_sendResponse(client->getFd(), welcome);
 }
 
