@@ -6,7 +6,7 @@
 /*   By: claudia <claudia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:16:08 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/02 11:33:24 by claudia          ###   ########.fr       */
+/*   Updated: 2025/12/02 12:06:19 by claudia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void Server::_handlerClientKick(const std::string &buffer, const int fd)
     }
     if (!channel->isChannelOperator(client->getNname()))
     {
-        _sendResponse(fd, ERR_CHANOPRIVSNEEDED(_getHostname(), channelName));
+		_sendResponse(fd, ERR_CHANOPRIVSNEEDED(_getHostname(), client->getNname(), channelName));
         return;
     }
     Client *targetClient = _getClient(targetNickname);
