@@ -6,7 +6,7 @@
 /*   By: claudia <claudia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:12:39 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/01 13:55:51 by claudia          ###   ########.fr       */
+/*   Updated: 2025/12/02 11:32:39 by claudia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -416,7 +416,8 @@ std::vector<std::string> Server::_splitBuffer(const std::string &buffer, const s
  * @param buffer
  * @param fd
  */
-void Server::_executeCommand(const std::string buffer, const int fd)
+
+/*void Server::_executeCommand(const std::string buffer, const int fd)
 {
 	bool						cmd_executed;
 	std::string					clean_buffer;
@@ -447,21 +448,46 @@ void Server::_executeCommand(const std::string buffer, const int fd)
 	}
 	if (!cmd_executed)
 		_sendResponse(fd, ERR_CMDNOTFOUND(_getHostname(), command));
-}
+}*/
 
 std::string Server::_cleanseBuffer(const std::string &buffer, const std::string &chars_to_remove)
 {
-	std::string	clean_buffer;
-	size_t		pos = buffer.find_first_of(chars_to_remove);
-
-	if (pos != std::string::npos)
-		clean_buffer = buffer.substr(0, pos);
-	else
-		clean_buffer = buffer;
-	return (clean_buffer);
+    size_t pos = buffer.find_first_of(chars_to_remove);
+    if (pos != std::string::npos)
+        return buffer.substr(0, pos);
+    return buffer;
 }
 
-//-----------
+void Server::_executeCommand(const std::string buffer, const int fd)
+{
+    std::string clean_buffer;
+    std::vector<std::string> splitted_buffer;
+    std::string command;
+    std::string parameters;
+
+    if (buffer.empty())
+        return;
+
+    clean_buffer = _cleanseBuffer(buffer, CRLF);
+    splitted_buffer = _splitBuffer(clean_buffer, SPACE);
+
+    command = splitted_buffer.empty() ? "" : splitted_buffer[0];
+    parameters = splitted_buffer.size() > 1 ? splitted_buffer[1] : "";
+
+    if (!command.empty() && command[0] == '/')
+        command.erase(0, 1);
+
+    for (size_t i = 0; i < this->_commandListSize; i++)
+    {
+        if (command == this->_commandList[i].command)
+        {
+            (this->*_commandList[i].handler)(parameters, fd);
+            return;
+        }
+    }
+
+    _sendResponse(fd, ERR_CMDNOTFOUND(_getHostname(), command));
+}
 
 Client* Server::_getClient(const int fd)
 {
