@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
+/*   By: claudia <claudia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:16:24 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/29 16:47:56 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/02 12:11:50 by claudia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void Server::_handlerClientMode(const std::string &buffer, const int fd)
 	}
 	else if (!channel->isChannelOperator(client->getNname()))
 	{
-		_sendResponse(fd, ERR_CHANOPRIVSNEEDED(_getHostname(), channelName));
+		_sendResponse(fd, ERR_CHANOPRIVSNEEDED(_getHostname(), client->getNname(), channelName));
 		_replyCode = 482;
 	}
 	else if (!_processFlagsMode( modeFlags, channel, _getClient(argument), argument))

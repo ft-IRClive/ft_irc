@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   InviteChannel.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
+/*   By: claudia <claudia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:15:41 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/30 18:18:41 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/02 12:09:13 by claudia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void Server::_handlerClientInvite(const std::string &buffer, const int fd)
 
 	if (!channel->isChannelOperator(client->getNname()))
 	{
-		_sendResponse(fd, ERR_CHANOPRIVSNEEDED(_getHostname(), channelName));
+		_sendResponse(fd, ERR_CHANOPRIVSNEEDED(_getHostname(), client->getNname(), channelName));
 		return;
 	}
 

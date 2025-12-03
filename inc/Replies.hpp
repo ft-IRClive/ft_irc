@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
+/*   By: claudia <claudia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 10:08:55 by claudia           #+#    #+#             */
-/*   Updated: 2025/11/29 17:38:10 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/02 12:07:21 by claudia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,10 @@
 
 #define CRLF "\r\n"
 
-#define RPL_WELCOME(server, nick, host) \
-	(std::string(":") + server + " 001 " + nick + \
-	" :Welcome to the IRC server! " + nick + "!" + host + CRLF)
+#define RPL_WELCOME(server, nick, user, host, realname) \
+    (std::string(":") + server + " 001 " + nick + \
+    " :Welcome to the IRC server! " + nick + "!" + user + "@" + host + \
+    " (" + realname + ")" + CRLF)
 
 #define RPL_UMODEIS(nick, host, channel, set, mode, arg) \
 	(std::string(":") + nick + "!" + host + " MODE " + channel + " " + set + mode + " " + arg + CRLF)
@@ -159,11 +160,9 @@
 #define ERR_USERONCHANNEL(server, user, channel) \
 	(std::string(":") + server + " 443 " + user + " " + channel + " :is already on channel" CRLF)
 
-
-#define ERR_CHANOPRIVSNEEDED(server, channel) \
-	(std::string(":") + server + " 482 " + channel + " :You're not a channel operator" CRLF)
-
-
+#define ERR_CHANOPRIVSNEEDED(server, nick, channel) \
+	(std::string(":") + server + " 482 " + nick + " " + channel + " :You're not a channel operator" CRLF)
+	
 #define ERR_NOPRIVILEGES(server, nick) \
 	(std::string(":") + server + " 481 " + nick + " :Permission Denied- You're not an IRC operator" CRLF)
 
