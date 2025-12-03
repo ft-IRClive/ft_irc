@@ -6,7 +6,7 @@
 /*   By: claudia <claudia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:12:39 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/02 11:32:39 by claudia          ###   ########.fr       */
+/*   Updated: 2025/12/03 11:37:59 by claudia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -416,39 +416,6 @@ std::vector<std::string> Server::_splitBuffer(const std::string &buffer, const s
  * @param buffer
  * @param fd
  */
-
-/*void Server::_executeCommand(const std::string buffer, const int fd)
-{
-	bool						cmd_executed;
-	std::string					clean_buffer;
-	std::vector<std::string>	splitted_buffer;
-	std::string					command;
-	std::string					parameters;
-
-	cmd_executed = false;
-	if (buffer.empty())
-		return;
-	clean_buffer = _cleanseBuffer(buffer, CRLF); //Delete the \r and \n from the line
-	splitted_buffer = _splitBuffer(clean_buffer, SPACE);
-	if (splitted_buffer.empty())
-		return;
-	//Command in uppercase
-	command = splitted_buffer[0];
-	for (size_t i = 0; i < command.size(); ++i)
-		command[i] = static_cast<char>(std::toupper(command[i]));
-	parameters = splitted_buffer[1]; //parameters
-	for (size_t i = 0; i < this->_commandListSize; i++)
-	{
-		if (command == this->_commandList[i].command)
-		{
-			(this->*_commandList[i].handler)(parameters, fd);
-			cmd_executed = true;
-			break;
-		}
-	}
-	if (!cmd_executed)
-		_sendResponse(fd, ERR_CMDNOTFOUND(_getHostname(), command));
-}*/
 
 std::string Server::_cleanseBuffer(const std::string &buffer, const std::string &chars_to_remove)
 {
