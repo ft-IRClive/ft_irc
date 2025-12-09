@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: claudia <claudia@student.42.fr>            +#+  +:+       +#+        */
+/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:12:39 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/03 11:37:59 by claudia          ###   ########.fr       */
+/*   Updated: 2025/12/09 17:21:29 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -271,6 +271,7 @@ void Server::_addServerSignal()
 {
 	signal(SIGINT, Server::_signalHandler);
 	signal(SIGQUIT, Server::_signalHandler);
+	signal(SIGPIPE, SIG_IGN);
 }
 
 /**
