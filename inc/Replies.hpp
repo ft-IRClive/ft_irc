@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: claudia <claudia@student.42.fr>            +#+  +:+       +#+        */
+/*   By: gmaccha- <gmaccha-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 10:08:55 by claudia           #+#    #+#             */
-/*   Updated: 2025/12/02 12:07:21 by claudia          ###   ########.fr       */
+/*   Updated: 2025/12/10 16:06:00 by gmaccha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,5 +181,8 @@
 
 #define ERR_NOSUCHNICK(server, nick) \
 	(std::string(":") + server + " 401 * " + nick + " :No such nick/channel" CRLF)
+
+#define ERR_NOSUCHCHANNEL2(server, nick, channel) \
+    ":" + server + " 403 " + nick + " " + channel + " :No such channel\r\n"
 
 #endif
