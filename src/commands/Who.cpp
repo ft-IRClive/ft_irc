@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 15:29:14 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/11 20:44:09 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/11 21:21:54 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ void Server::_handlerClientWho(const std::string &params, const int fd)
 {
 	Client		*client = _getClient(fd);
 	Channel		*channel;
-	Client		*client;
 	std::string	prefix;
 	std::string	reply;
 	std::string	endReply;
@@ -28,12 +27,16 @@ void Server::_handlerClientWho(const std::string &params, const int fd)
 		_sendResponse(fd, ERR_MISSINGPARAMS(_hostname, client->getNname()));
 		return;
 	}
+
+	//Verify if the channel exists
 	channel = _getChannel(params);
 	if (!channel)
 	{
-		_sendResponse(fd, ERR_NOSUCHCHANNEL2(_hostname, client->getNname(), params));
+		_sendResponse(fd, ERR_NOSUCHCHANNEL(_hostname, params));
 		return;
 	}
+
+	//Get all the clients
 	const std::vector<Client*> &clients = channel->getChClients();
 	for (std::vector<Client*>::const_iterator i = clients.begin(); i != clients.end(); i++)
 	{

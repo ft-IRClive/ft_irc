@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:18:27 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/11 20:36:40 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/11 21:19:01 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,16 @@ void Server::_handlerClientUsername(const std::string &parameters, const int fd)
 		_replyCode = 451;
 		return;
 	}
+
+	//The client doesn't have username
 	if (!client->getUname().empty())
 	{
 		_sendResponse(fd, ERR_ALREADYREGISTERED(_getHostname(), client->getNname()));
 		_replyCode = 462;
 		return;
 	}
+
+	//Extract the username
 	iss >> username;
 	iss >> mode >> unused;
 	std::getline(iss >> std::ws, realname);

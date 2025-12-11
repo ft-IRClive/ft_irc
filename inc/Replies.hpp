@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 10:08:55 by claudia           #+#    #+#             */
-/*   Updated: 2025/12/11 20:15:10 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/11 21:22:01 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,10 +129,6 @@
 
 #define ERR_NOSUCHNICK(server, nick) \
 	(std::string(":") + server + " 401 * " + nick + " :No such nick/channel" CRLF)
-
-
-#define ERR_NOSUCHCHANNEL2(server, nick, channel) \
-	":" + server + " 403 " + nick + " " + channel + " :No such channel\r\n"
 
 
 #endif

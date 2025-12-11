@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:16:24 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/11 20:44:28 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/11 21:10:52 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ void Server::_handlerClientMode(const std::string &buffer, const int fd)
 	std::string			argStr;
 	std::string			modeMsg;
 
+	//Extract the name of the channel, the flags and the argument
 	iss >> channelName >> modeFlags;
 	iss >> argument;
 	client = _getClient(fd);
@@ -48,6 +49,7 @@ void Server::_handlerClientMode(const std::string &buffer, const int fd)
 		_sendResponse(fd, ERR_NOSUCHCHANNEL(_getHostname(), channelName));
 		_replyCode = 403;
 	}
+	//Verify that is operator
 	else if (!channel->isChannelOperator(client->getNname()))
 	{
 		_sendResponse(fd, ERR_CHANOPRIVSNEEDED(_getHostname(), client->getNname(), channelName));

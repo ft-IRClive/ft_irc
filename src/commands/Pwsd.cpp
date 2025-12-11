@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 15:09:01 by claudia           #+#    #+#             */
-/*   Updated: 2025/11/29 15:44:47 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/11 21:15:53 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,15 @@ void Server::_handlerClientPassword(const std::string &password, const int fd)
 		_replyCode = 461;
 		return ;
 	}
+
+	//Verify if the client isn't already logged
 	if (client->getIsAuthenticated())
 	{
 		_sendResponse(fd, ERR_ALREADYREGISTERED(_getHostname(), "*"));
 		_replyCode = 462; return ;
 	}
+
+	//Correct password or not
 	if (_passwd != password)
 	{
 		_sendResponse(fd, ERR_INCORPASS(_getHostname(), "*"));

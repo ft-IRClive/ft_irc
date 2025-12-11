@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:16:41 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/11 20:40:04 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/11 21:12:42 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,16 @@ void Server::_handlerClientNickname(const std::string &nickname, const int fd)
 		_replyCode = 461;
 		return ;
 	}
+
+	//Verify that the nickname is valid
 	if (!_isValidNickname(nickname))
 	{
 		_sendResponse(fd, ERR_INVALIDNICK(_getHostname(), nickname));
 		_replyCode = 432;
 		return ;
 	}
+
+	//Verify that the nickname is not in use
 	if (_isNicknameInUse(fd, nickname))
 	{
 		_sendResponse(fd, ERR_NICKINUSE(_getHostname(), nickname));

@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:17:56 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/11 20:32:19 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/11 21:15:17 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,14 +39,18 @@ void Server::_handlerClientPrivmsg(const std::string &buffer, const int fd)
 		return;
 	}
 	text = buffer.substr(textPos + 1);
+
+	//Private message to a channel
 	if (!target.empty() && target[0] == '#')
 	{
+		//Verify that the channel exists
 		channel = _getChannel(target);
 		if (!channel)
 		{
 			_sendResponse(fd, ERR_NOSUCHCHANNEL(_hostname, target));
 			return;
 		}
+		//Verify that the channel has this client
 		if (!channel->isClientInChannel(sender->getNname()))
 		{
 			_sendResponse(fd, ERR_NOTONCHANNEL(_hostname, target));
@@ -55,6 +59,7 @@ void Server::_handlerClientPrivmsg(const std::string &buffer, const int fd)
 		msg = RPL_PRIVMSG(sender->getNname(), sender->getHostName(), target, text);
 		_broadcastToChannel(target, msg, fd);
 	}
+	//Private message to a client
 	else
 	{
 		receiver = _getClient(target);

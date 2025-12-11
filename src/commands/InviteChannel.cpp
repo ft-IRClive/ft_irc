@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:15:41 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/11 20:22:21 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/11 21:00:29 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,39 +28,53 @@ void Server::_handlerClientInvite(const std::string &buffer, const int fd)
 		_sendResponse(fd, ERR_NOTREGISTERED(_getHostname(), "*"));
 		return;
 	}
+
+	//Extract nickname and the name of the channel
 	iss >> targetNickname >> channelName;
 	if (targetNickname.empty() || channelName.empty())
 	{
 		_sendResponse(fd, ERR_MISSINGPARAMS(_getHostname(), "INVITE"));
 		return;
 	}
+
+	//Verify that the channel exists
 	channel = _getChannel(channelName);
 	if (!channel)
 	{
 		_sendResponse(fd, ERR_NOSUCHCHANNEL(_getHostname(), channelName));
 		return;
 	}
+
+	//If the channel doesn't have clients
 	if (!channel->hasClient(client))
 	{
 		_sendResponse(fd, ERR_NOTONCHANNEL(_getHostname(), channelName));
 		return;
 	}
+
+	//If this channel isn't operator
 	if (!channel->isChannelOperator(client->getNname()))
 	{
 		_sendResponse(fd, ERR_CHANOPRIVSNEEDED(_getHostname(), client->getNname(), channelName));
 		return;
 	}
+
+	//Verify that the invited client exists
 	invitedClient = _getClient(targetNickname);
 	if (!invitedClient)
 	{
 		_sendResponse(fd, ERR_NOSUCHNICK(_getHostname(), targetNickname));
 		return;
 	}
+
+	//Verify that the invited client is in the channel
 	if (channel->hasClient(invitedClient))
 	{
 		_sendResponse(fd, ERR_USERONCHANNEL(_getHostname(), targetNickname, channelName));
 		return;
 	}
+
+	//Add the invited client + reply
 	invitedClient->addChannelInvited(channelName);
 	inviteConfirm = RPL_INVITING(
 		client->getHostName(),

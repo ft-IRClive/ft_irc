@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:18:08 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/11 20:44:28 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/11 21:16:30 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ void Server::_handlerClientQuit(const std::string &params, const int fd)
 
 	if (!client)
 		return;
+
+	//Quit with a reason
 	if (!params.empty())
 	{
 		if (params[0] == ':')
@@ -28,8 +30,10 @@ void Server::_handlerClientQuit(const std::string &params, const int fd)
 		else
 			reason = params;
 	}
+	//Quit without a reason
 	if (reason.empty())
 		reason = "Client Quit";
+
 	quitMsg = ":" + client->getNname() + " QUIT :" + reason;
 	for (size_t i = 0; i < _channels.size(); i++)
 	{
@@ -42,7 +46,6 @@ void Server::_handlerClientQuit(const std::string &params, const int fd)
 			ch->quit(client);
 		}
 	}
-
 	std::cout << "Client <" << fd << "> Disconnected (" << reason << ")" << std::endl;
 	_clearClient(fd);
 }
