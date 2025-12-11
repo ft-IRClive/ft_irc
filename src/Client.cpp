@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:12:25 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/25 16:58:42 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/11 20:42:06 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ Client::Client(int fd)
 
 Client::~Client()
 {
-
 }
 
 int Client::getFd() const

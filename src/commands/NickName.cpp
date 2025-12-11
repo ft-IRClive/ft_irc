@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:16:41 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/29 16:08:36 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/11 20:40:04 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,10 @@
  */
 void Server::_handlerClientNickname(const std::string &nickname, const int fd)
 {
-	Client	*client = _getClient(fd);
+	Client		*client = _getClient(fd);
+	std::string	oldNick;
+	std::string	nickMsg;
+	Channel		*channel;
 
 	if (nickname.empty())
 	{
@@ -41,7 +44,7 @@ void Server::_handlerClientNickname(const std::string &nickname, const int fd)
 		_replyCode = 433;
 		return ;
 	}
-	std::string oldNick = client->getNname();
+	oldNick = client->getNname();
 	client->setNname(nickname);
 	if (_clientIsReadyToLogin(fd))
 	{
@@ -51,13 +54,13 @@ void Server::_handlerClientNickname(const std::string &nickname, const int fd)
 	}
 	if (client->getIsLogged())
 	{
-		std::string nickMsg = ":" + oldNick + " NICK " + nickname + CRLF;
+		nickMsg = ":" + oldNick + " NICK " + nickname + CRLF;
 		_sendResponse(fd, nickMsg);
 		for (size_t i = 0; i < this->_channels.size(); i++)
 		{
-			Channel	*ch = this->_channels[i];
-			if (ch && ch->hasClient(client))
-				_broadcastToChannel(ch->getChName(), nickMsg, fd);
+			channel = this->_channels[i];
+			if (channel && channel->hasClient(client))
+				_broadcastToChannel(channel->getChName(), nickMsg, fd);
 		}
 	}
 	_replyCode = 0;

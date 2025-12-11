@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:18:08 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/09 17:22:15 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/11 20:44:28 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ void Server::_handlerClientQuit(const std::string &params, const int fd)
 {
 	Client*		client = _getClient(fd);
 	std::string	reason;
+	std::string	quitMsg;
+	Channel*	ch;
 
 	if (!client)
 		return;
@@ -28,12 +30,10 @@ void Server::_handlerClientQuit(const std::string &params, const int fd)
 	}
 	if (reason.empty())
 		reason = "Client Quit";
-
-	std::string quitMsg = ":" + client->getNname() + " QUIT :" + reason;
-
-	for (size_t i = 0; i < _channels.size(); ++i)
+	quitMsg = ":" + client->getNname() + " QUIT :" + reason;
+	for (size_t i = 0; i < _channels.size(); i++)
 	{
-		Channel* ch = _channels[i];
+		ch = _channels[i];
 		if (!ch)
 			continue;
 		if (ch->hasClient(client))

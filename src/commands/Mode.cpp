@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: claudia <claudia@student.42.fr>            +#+  +:+       +#+        */
+/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:16:24 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/02 12:11:50 by claudia          ###   ########.fr       */
+/*   Updated: 2025/12/11 20:44:28 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,19 +24,20 @@ void Server::_handlerClientMode(const std::string &buffer, const int fd)
 {
 	std::istringstream	iss(buffer);
 	std::string			channelName, modeFlags, argument;
+	Client*				client;
+	Channel*			channel;
+	std::string			argStr;
+	std::string			modeMsg;
 
 	iss >> channelName >> modeFlags;
 	iss >> argument;
-
-	Client*		client = _getClient(fd);
-	Channel*	channel = _getChannel(channelName);
-
+	client = _getClient(fd);
+	channel = _getChannel(channelName);
 	if (modeFlags.empty())
 	{
 		_replyCode = 461;
 		return;
 	}
-
 	if (channelName.empty() || modeFlags.empty())
 	{
 		_sendResponse(fd, ERR_MISSINGPARAMS(_getHostname(), client->getNname()));
@@ -59,14 +60,13 @@ void Server::_handlerClientMode(const std::string &buffer, const int fd)
 	}
 	else
 	{
-		std::string argStr = argument.empty() ? "" : argument;
-		std::string modeMsg = RPL_CHANGEMODE(
+		argStr = argument.empty() ? "" : argument;
+		modeMsg = RPL_CHANGEMODE(
 			client->getHostName(),
 			channel->getChName(),
 			modeFlags,
 			argStr
 		);
-
 		_broadcastToChannel(channelName, modeMsg, -1);
 		_replyCode = 200;
 	}
@@ -78,7 +78,7 @@ bool _processFlagsMode(const std::string& modeFlags, Channel* channel, Client* c
 	char	mode = 0;
 	char	flag;
 
-	for (size_t i = 0; i < modeFlags.size(); ++i)
+	for (size_t i = 0; i < modeFlags.size(); i++)
 	{
 		flag = modeFlags[i];
 		if (flag == '+' || flag == '-')

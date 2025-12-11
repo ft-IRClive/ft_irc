@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:18:27 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/29 15:45:13 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/11 20:36:40 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,9 @@
  */
 void Server::_handlerClientUsername(const std::string &parameters, const int fd)
 {
-	Client	*client = _getClient(fd);
+	Client				*client = _getClient(fd);
+	std::istringstream	iss(parameters);
+	std::string			username, mode, unused, realname;
 
 	if (parameters.empty())
 	{
@@ -29,24 +31,18 @@ void Server::_handlerClientUsername(const std::string &parameters, const int fd)
 		_replyCode = 461;
 		return;
 	}
-
 	if (!client || !client->getIsAuthenticated())
 	{
 		_sendResponse(fd, ERR_NOTREGISTERED(_getHostname(), "USER"));
 		_replyCode = 451;
 		return;
 	}
-
 	if (!client->getUname().empty())
 	{
 		_sendResponse(fd, ERR_ALREADYREGISTERED(_getHostname(), client->getNname()));
 		_replyCode = 462;
 		return;
 	}
-
-	std::istringstream	iss(parameters);
-	std::string			username, mode, unused, realname;
-
 	iss >> username;
 	iss >> mode >> unused;
 	std::getline(iss >> std::ws, realname);
@@ -74,7 +70,5 @@ void Server::_handlerClientUsername(const std::string &parameters, const int fd)
 		_sendWelcome(client);
 	}
 	else
-	{
 		_replyCode = 200;
-	}
 }

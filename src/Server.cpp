@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: claudia <claudia@student.42.fr>            +#+  +:+       +#+        */
+/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:12:39 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/11 12:32:37 by claudia          ###   ########.fr       */
+/*   Updated: 2025/12/11 20:44:28 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ std::string	toupper(const std::string &str)
 	std::string	s;
 
 	s.reserve(str.size());
-	for (size_t i = 0; i < str.size(); ++i)
+	for (size_t i = 0; i < str.size(); i++)
 		s.push_back(static_cast<char>(std::toupper(static_cast<unsigned char>(str[i]))));
 	return (s);
 }
@@ -420,43 +420,43 @@ std::vector<std::string> Server::_splitBuffer(const std::string &buffer, const s
 
 std::string Server::_cleanseBuffer(const std::string &buffer, const std::string &chars_to_remove)
 {
-    size_t pos = buffer.find_first_of(chars_to_remove);
-    if (pos != std::string::npos)
-        return buffer.substr(0, pos);
-    return buffer;
+	size_t pos = buffer.find_first_of(chars_to_remove);
+	if (pos != std::string::npos)
+		return buffer.substr(0, pos);
+	return buffer;
 }
 
 void Server::_executeCommand(const std::string buffer, const int fd)
 {
-    std::string clean_buffer;
-    std::vector<std::string> splitted_buffer;
-    std::string command;
-    std::string parameters;
+	std::string					clean_buffer;
+	std::vector<std::string>	splitted_buffer;
+	std::string					command;
+	std::string					parameters;
 
-    if (buffer.empty())
-        return;
+	if (buffer.empty())
+		return;
 
-    clean_buffer = _cleanseBuffer(buffer, CRLF);
-    splitted_buffer = _splitBuffer(clean_buffer, SPACE);
+	clean_buffer = _cleanseBuffer(buffer, CRLF);
+	splitted_buffer = _splitBuffer(clean_buffer, SPACE);
 
-    command = splitted_buffer.empty() ? "" : splitted_buffer[0];
-    parameters = splitted_buffer.size() > 1 ? splitted_buffer[1] : "";
+	command = splitted_buffer.empty() ? "" : splitted_buffer[0];
+	parameters = splitted_buffer.size() > 1 ? splitted_buffer[1] : "";
 
-    if (!command.empty() && command[0] == '/')
-        command.erase(0, 1);
+	if (!command.empty() && command[0] == '/')
+		command.erase(0, 1);
 
-    command = toupper(command);
+	command = toupper(command);
 
-    for (size_t i = 0; i < this->_commandListSize; i++)
-    {
-        if (command == this->_commandList[i].command)
-        {
-            (this->*_commandList[i].handler)(parameters, fd);
-            return;
-        }
-    }
+	for (size_t i = 0; i < this->_commandListSize; i++)
+	{
+		if (command == this->_commandList[i].command)
+		{
+			(this->*_commandList[i].handler)(parameters, fd);
+			return;
+		}
+	}
 
-    _sendResponse(fd, ERR_CMDNOTFOUND(_getHostname(), command));
+	_sendResponse(fd, ERR_CMDNOTFOUND(_getHostname(), command));
 }
 
 Client* Server::_getClient(const int fd)
@@ -524,7 +524,7 @@ void Server::_removeClientFromChannels(const int fd)
 
 	if (!client)
 		return;
-	for (size_t i = 0; i < channelsCopy.size(); ++i)
+	for (size_t i = 0; i < channelsCopy.size(); i++)
 	{
 		if (channelsCopy[i])
 			channelsCopy[i]->removeChannelClient(client);
@@ -598,7 +598,7 @@ void Server::_broadcastToAll(const std::string &msg, int exclude_fd)
 void Server::_broadcastToChannel(const std::string &channelName, const std::string &msg, int exclude_fd)
 {
 	Channel	*channel = _getChannel(channelName);
-	Client	*c;
+	Client	*client;
 	int		fd_client;
 
 	if (!channel)
@@ -606,10 +606,10 @@ void Server::_broadcastToChannel(const std::string &channelName, const std::stri
 	std::vector<Client*> clients = channel->getChClients();
 	for (size_t i = 0; i < clients.size(); i++)
 	{
-		c = clients[i];
-		if (!c)
+		client = clients[i];
+		if (!client)
 			continue;
-		fd_client = c->getFd();
+		fd_client = client->getFd();
 		if (exclude_fd >= 0 && fd_client == exclude_fd)
 			continue;
 		_sendResponse(fd_client, msg);

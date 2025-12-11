@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmaccha- <gmaccha-@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:11:42 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/10 16:08:41 by gmaccha-         ###   ########.fr       */
+/*   Updated: 2025/12/11 20:44:30 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ Channel::Channel()
 	this->_name = "";
 	this->_topic = "";
 	this->_clients = std::vector<Client*>();
-	this->_operator_clients = std::vector<Client*>();
+	this->_operatorClients = std::vector<Client*>();
 }
 
 Channel::Channel(std::string name)
@@ -35,13 +35,13 @@ Channel::Channel(std::string name)
 	this->_name = name;
 	this->_topic = "";
 	this->_clients = std::vector<Client*>();
-	this->_operator_clients = std::vector<Client*>();
+	this->_operatorClients = std::vector<Client*>();
 }
 
 Channel::~Channel()
 {
 	this->_clients.clear();
-	this->_operator_clients.clear();
+	this->_operatorClients.clear();
 }
 
 int Channel::getClientsSize(void) const
@@ -69,7 +69,7 @@ std::string Channel::getChannelNames(void) const
 	std::string	names;
 	bool		first = true;
 
-	for (std::vector<Client*>::const_iterator i = this->_clients.begin(); i != this->_clients.end(); ++i)
+	for (std::vector<Client*>::const_iterator i = this->_clients.begin(); i != this->_clients.end(); i++)
 	{
 		if (!first)
 			names += " ";
@@ -96,7 +96,7 @@ std::vector<Client*> Channel::getChClients(void)
 
 std::vector<Client*> Channel::getOperatorClients(void)
 {
-	return (this->_operator_clients);
+	return (this->_operatorClients);
 }
 
 //----------- SETTERS
@@ -124,7 +124,7 @@ void Channel::setKey(std::string key)
 void Channel::setChannelOperator(Client* client)
 {
 	client->setOp(true);
-	this->_operator_clients.push_back(client);
+	this->_operatorClients.push_back(client);
 	return;
 }
 
@@ -151,11 +151,11 @@ void Channel::removeRestrictedTopic(void)
 void Channel::removeChannelOperator(Client *client)
 {
 	client->setOp(false);
-	for(std::vector<Client*>::iterator i = this->_operator_clients.begin(); i != this->_operator_clients.end(); i++)
+	for(std::vector<Client*>::iterator i = this->_operatorClients.begin(); i != this->_operatorClients.end(); i++)
 	{
 		if ((*i)->getNname() == client->getNname())
 		{
-			this->_operator_clients.erase(i);
+			this->_operatorClients.erase(i);
 			return ;
 		}
 	}
@@ -195,7 +195,7 @@ bool Channel::hasKey(void) const
 
 bool Channel::isChannelOperator(std::string nickname) const
 {
-	for(std::vector<Client*>::const_iterator i = this->_operator_clients.begin(); i != this->_operator_clients.end(); i++)
+	for(std::vector<Client*>::const_iterator i = this->_operatorClients.begin(); i != this->_operatorClients.end(); i++)
 	{
 		if ((*i)->getNname() == nickname)
 			return (true);
@@ -205,7 +205,7 @@ bool Channel::isChannelOperator(std::string nickname) const
 
 bool Channel::isChannelOperator(const int fd) const
 {
-	for(std::vector<Client*>::const_iterator i = this->_operator_clients.begin(); i != this->_operator_clients.end(); i++)
+	for(std::vector<Client*>::const_iterator i = this->_operatorClients.begin(); i != this->_operatorClients.end(); i++)
 	{
 		if ((*i)->getFd() == fd)
 			return (true);
@@ -269,5 +269,5 @@ bool Channel::isChannelInviteOnly(void) const
 
 void Channel::setTopic(std::string topic)
 {
-    this->_topic = topic;
+	this->_topic = topic;
 }

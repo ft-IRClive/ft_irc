@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:18:18 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/10 17:12:57 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/11 20:35:19 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,23 @@
 
 void Server::_handlerClientTopic(const std::string &buffer, const int fd)
 {
-	Client	*client = _getClient(fd);
+	Client						*client = _getClient(fd);
+	std::vector<std::string>	tokens;
+	std::string					channelName;
+	Channel						*channel;
+	std::string					newTopic;
+	std::string					msg;
+
 	if (!client)
 		return;
-	std::vector<std::string> tokens = _splitBuffer(buffer, " ");
+	tokens = _splitBuffer(buffer, " ");
 	if (tokens.size() < 1)
 	{
 		_sendResponse(fd, ERR_MISSINGPARAMS(_hostname, client->getNname()));
 		return;
 	}
-	std::string	channelName = tokens[0];
-	Channel		*channel = _getChannel(channelName);
+	channelName = tokens[0];
+	channel = _getChannel(channelName);
 	if (!channel)
 	{
 		_sendResponse(fd, ERR_NOSUCHCHANNEL2(_hostname, client->getNname(), channelName));
@@ -43,9 +49,9 @@ void Server::_handlerClientTopic(const std::string &buffer, const int fd)
 		_sendResponse(fd, ERR_CHANOPRIVSNEEDED(_hostname, client->getNname(), channelName));
 		return;
 	}
-	std::string	newTopic = buffer.substr(buffer.find(":", 1) + 1);
+	newTopic = buffer.substr(buffer.find(":", 1) + 1);
 	channel->setTopic(newTopic);
-	std::string	msg =
+	msg =
 		":" + client->getNname() + "!" + client->getHostName() +
 		" TOPIC " + channelName + " :" + newTopic + CRLF;
 	_broadcastToChannel(channelName, msg);

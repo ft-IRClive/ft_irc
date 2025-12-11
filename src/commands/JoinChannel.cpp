@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:15:56 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/29 15:43:19 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/11 20:23:23 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,9 @@ void Server::_handlerClientJoin(const std::string &buffer, const int fd)
 {
 	Client						*client = _getClient(fd);
 	std::vector<std::string>	params = _splitBuffer(buffer, SPACE);
+	std::string					channelName;
+	std::string					key;
+	Channel						*channel;
 
 	if (params.empty())
 	{
@@ -27,23 +30,18 @@ void Server::_handlerClientJoin(const std::string &buffer, const int fd)
 		_sendResponse(fd, ERR_NOTREGISTERED(_getHostname(), client->getNname()));
 		return;
 	}
-
-	std::string	channelName = params[0];
-	std::string	key = (params.size() > 1) ? params[1] : "";
-
+	channelName = params[0];
+	key = (params.size() > 1) ? params[1] : "";
 	if (channelName.empty() || channelName[0] != '#')
 	{
 		_sendResponse(fd, ERR_BADCHANMASK(_getHostname(), client->getNname(), channelName));
 		return;
 	}
-
-	Channel	*channel = _getChannel(channelName);
-
+	channel = _getChannel(channelName);
 	if (!channel)
 	{
 		channel = new Channel(channelName);
 		_addChannel(channel);
-
 		channel->join(client);
 		channel->setChannelOperator(client);
 
@@ -64,25 +62,21 @@ void Server::_handlerClientJoin(const std::string &buffer, const int fd)
 
 	if (channel->hasClient(client))
 		return;
-
 	if (channel->isChannelComplete())
 	{
 		_sendResponse(fd, ERR_CHANNELISFULL(_getHostname(), client->getNname(), channelName));
 		return;
 	}
-
 	if (channel->isChannelInviteOnly() && !client->isChannelInvited(channelName))
 	{
 		_sendResponse(fd, ERR_INVITEONLYCHAN(_getHostname(), client->getNname(), channelName));
 		return;
 	}
-
 	if (channel->hasKey() && key != channel->getChKey())
 	{
 		_sendResponse(fd, ERR_BADCHANNELKEY(_getHostname(), client->getNname(), channelName));
 		return;
 	}
-
 	channel->join(client);
 	client->removeChannelInvited(channelName);
 

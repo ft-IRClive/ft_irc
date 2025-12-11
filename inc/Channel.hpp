@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:22:03 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/29 16:54:53 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/11 20:09:21 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,6 @@ class Channel
 		void	part(Client *client);
 		void	quit(Client *client);
 		void	invite(Client *client);
-		// void	broadcast(Client *sender, std::string target, std::string msg); -> donde esta
 
 		bool	hasKey(void) const;
 		bool	hasClient(Client *client);
@@ -72,7 +71,7 @@ class Channel
 		std::string				_name;
 		std::string				_topic;
 		std::vector<Client*>	_clients;
-		std::vector<Client*>	_operator_clients; //Kick, invite
+		std::vector<Client*>	_operatorClients; //Kick, invite
 };
 
 #endif
