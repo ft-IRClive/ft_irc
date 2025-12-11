@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:17:56 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/11 21:15:17 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/11 21:26:37 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ void Server::_handlerClientPrivmsg(const std::string &buffer, const int fd)
 			_sendResponse(fd, ERR_NOSUCHNICK(_hostname, target));
 			return;
 		}
-		msg = RPL_PRIVMSG(sender->getNname(), sender->getHostName(), receiver->getNname(), text);
-		_sendResponse(receiver->getFd(), msg);
+		_sendResponse(receiver->getFd(), RPL_PRIVMSG(sender->getNname(), sender->getHostName(), receiver->getNname(), text));
 	}
 }

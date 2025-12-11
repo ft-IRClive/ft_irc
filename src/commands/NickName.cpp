@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:16:41 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/11 21:12:42 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/11 21:38:17 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ void Server::_handlerClientNickname(const std::string &nickname, const int fd)
 {
 	Client		*client = _getClient(fd);
 	std::string	oldNick;
-	std::string	nickMsg;
 	Channel		*channel;
+	std::string	prefix;
 
 	if (nickname.empty())
 	{
@@ -58,13 +58,13 @@ void Server::_handlerClientNickname(const std::string &nickname, const int fd)
 	}
 	if (client->getIsLogged())
 	{
-		nickMsg = ":" + oldNick + " NICK " + nickname + CRLF;
-		_sendResponse(fd, nickMsg);
+		prefix = oldNick + "!" + client->getHostName();
+		_sendResponse(fd, RPL_NICK(prefix, nickname));
 		for (size_t i = 0; i < this->_channels.size(); i++)
 		{
 			channel = this->_channels[i];
 			if (channel && channel->hasClient(client))
-				_broadcastToChannel(channel->getChName(), nickMsg, fd);
+				_broadcastToChannel(channel->getChName(), RPL_NICK(prefix, nickname), fd);
 		}
 	}
 	_replyCode = 0;

@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:12:39 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/11 20:44:28 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/11 21:23:43 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -554,15 +554,7 @@ void Server::_sendWelcome(Client* client)
 	std::string host     = client->getIpAddr();
 	std::string realname = client->getRealName().empty() ? "*" : client->getRealName();
 
-	std::string welcome = RPL_WELCOME(
-		_getHostname(),
-		nick,
-		user,
-		host,
-		realname
-	);
-
-	_sendResponse(client->getFd(), welcome);
+	_sendResponse(client->getFd(), RPL_WELCOME(_getHostname(), nick, user, host, realname));
 }
 
 /**

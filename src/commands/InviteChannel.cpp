@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:15:41 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/11 21:00:29 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/11 21:35:23 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,14 +76,6 @@ void Server::_handlerClientInvite(const std::string &buffer, const int fd)
 
 	//Add the invited client + reply
 	invitedClient->addChannelInvited(channelName);
-	inviteConfirm = RPL_INVITING(
-		client->getHostName(),
-		channelName,
-		client->getNname(),
-		targetNickname
-	);
-	_sendResponse(fd, inviteConfirm);
-	inviteMsg = ":" + client->getNname() + "!" + client->getHostName() +
-						" INVITE " + targetNickname + " " + channelName + CRLF;
-	_sendResponse(invitedClient->getFd(), inviteMsg);
+	_sendResponse(fd, RPL_INVITING(client->getHostName(), channelName, client->getNname(), targetNickname));
+	_sendResponse(invitedClient->getFd(), RPL_INVITE_MSG(client->getNname(), client->getHostName(), targetNickname, channelName));
 }

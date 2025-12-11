@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 10:08:55 by claudia           #+#    #+#             */
-/*   Updated: 2025/12/11 21:22:01 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/11 21:39:59 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,25 @@
 	(std::string(":") + host + " INVITE " + invited + " " + channel + CRLF)
 
 
+#define RPL_INVITE_MSG(inviterNick, inviterHost, invitedNick, channel) \
+	(std::string(":") + inviterNick + "!" + inviterHost + \
+	" INVITE " + invitedNick + " " + channel + CRLF)
+
+
 #define RPL_PRIVMSG(nick, host, receiver, text) \
 	(std::string(":") + nick + "!" + host + " PRIVMSG " + receiver + " :" + text + CRLF)
+
+
+#define RPL_NICK(prefix, newnick) \
+	(std::string(":") + (prefix) + " NICK " + (newnick) + CRLF)
+
+
+#define RPL_WHOREPLY(server, requester, channel, user, host, server2, nick, status, realname) \
+	(std::string(":") + (server) + " 352 " + (requester) + " " + (channel) + " " + (user) + " " + (host) + " " + (server2) + " " + (nick) + " " + (status) + " :0 " + (realname) + CRLF)
+
+
+#define RPL_ENDOFWHO(server, requester, channel) \
+	(std::string(":") + (server) + " 315 " + (requester) + " " + (channel) + " :End of WHO list" + CRLF)
 
 
 #define ERR_UNKNOWNMODE(server, nick, channel, mode) \
@@ -129,6 +146,18 @@
 
 #define ERR_NOSUCHNICK(server, nick) \
 	(std::string(":") + server + " 401 * " + nick + " :No such nick/channel" CRLF)
+
+
+#define RPL_CAP_LS(server) \
+	(std::string(":") + server + " CAP * LS :" + CRLF)
+
+
+#define RPL_CAP_NAK(server, caps) \
+	(std::string(":") + server + " CAP * NAK :" + caps + CRLF)
+
+
+#define RPL_CAP_LIST(server) \
+	(std::string(":") + server + " CAP * LIST :" + CRLF)
 
 
 #endif

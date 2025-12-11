@@ -6,25 +6,27 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 15:29:14 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/11 21:21:54 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/11 21:41:28 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/Server.hpp"
 
+#include "../../inc/Server.hpp"
+#include "../../inc/Replies.hpp"
+
 void Server::_handlerClientWho(const std::string &params, const int fd)
 {
-	Client		*client = _getClient(fd);
+	Client		*requester = _getClient(fd);
 	Channel		*channel;
-	std::string	prefix;
 	std::string	reply;
 	std::string	endReply;
 
-	if (!client)
+	if (!requester)
 		return;
 	if (params.empty())
 	{
-		_sendResponse(fd, ERR_MISSINGPARAMS(_hostname, client->getNname()));
+		_sendResponse(fd, ERR_MISSINGPARAMS(_hostname, requester->getNname()));
 		return;
 	}
 
@@ -38,21 +40,30 @@ void Server::_handlerClientWho(const std::string &params, const int fd)
 
 	//Get all the clients
 	const std::vector<Client*> &clients = channel->getChClients();
-	for (std::vector<Client*>::const_iterator i = clients.begin(); i != clients.end(); i++)
+	for (std::vector<Client*>::const_iterator it = clients.begin(); it != clients.end(); ++it)
 	{
-		client = *i;
-		if (!client)
+		Client *c = *it;
+		if (!c)
 			continue;
 
-		prefix = channel->isChannelOperator(client->getNname()) ? "@" : "";
-		reply = ":" + _hostname + " 352 " + client->getNname() + " " +
-							params + " " + client->getUname() + " " + client->getHostName() +
-							" " + _hostname + " " + client->getNname() + " H" + prefix +
-							" :0 " + client->getRealName() + CRLF;
+		std::string	prefix = channel->isChannelOperator(c->getNname()) ? "@" : "";
+		std::string	status = "H" + prefix;
+
+		reply = RPL_WHOREPLY(
+			_hostname,
+			requester->getNname(),
+			params,
+			c->getUname(),
+			c->getHostName(),
+			_hostname,
+			c->getNname(),
+			status,
+			c->getRealName()
+		);
 
 		_sendResponse(fd, reply);
 	}
-	endReply = ":" + _hostname + " 315 " + client->getNname() + " " +
-						params + " :End of WHO list" + CRLF;
+
+	endReply = RPL_ENDOFWHO(_hostname, requester->getNname(), params);
 	_sendResponse(fd, endReply);
 }

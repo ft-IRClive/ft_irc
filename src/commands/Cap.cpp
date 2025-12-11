@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 17:43:14 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/11 20:57:26 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/11 21:32:56 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,14 @@ void Server::_handlerClientCap(const std::string &buffer, const int fd)
 
 	//Verify subcommand
 	if (subcommand == "LS")
-		_sendResponse(fd, ":" + _getHostname() + " CAP * LS :");
+		_sendResponse(fd, RPL_CAP_LS(_getHostname()));
 	else if (subcommand == "REQ")
 	{
 		//Extract the parameters of the command
 		iss >> caps;
 		if (!caps.empty())
-			_sendResponse(fd, ":" + _getHostname() + " CAP * NAK :" + caps);
+			_sendResponse(fd, RPL_CAP_NAK(_getHostname(), caps));
 	}
 	else if (subcommand == "LIST")
-		_sendResponse(fd, ":" + _getHostname() + " CAP * LIST :");
+		_sendResponse(fd, RPL_CAP_LIST(_getHostname()));
 }
