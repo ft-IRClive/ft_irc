@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
+/*   By: claudia <claudia@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:12:39 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/09 17:21:29 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/11 12:32:37 by claudia          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -444,6 +444,8 @@ void Server::_executeCommand(const std::string buffer, const int fd)
 
     if (!command.empty() && command[0] == '/')
         command.erase(0, 1);
+
+    command = toupper(command);
 
     for (size_t i = 0; i < this->_commandListSize; i++)
     {

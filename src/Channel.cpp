@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmaccha- <gmaccha-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:11:42 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/11/29 17:03:48 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/10 16:08:41 by gmaccha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -265,4 +265,9 @@ bool Channel::isChannelComplete(void) const
 bool Channel::isChannelInviteOnly(void) const
 {
 	return (this->_invite);
+}
+
+void Channel::setTopic(std::string topic)
+{
+    this->_topic = topic;
 }

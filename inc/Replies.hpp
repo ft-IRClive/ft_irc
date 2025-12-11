@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: claudia <claudia@student.42.fr>            +#+  +:+       +#+        */
+/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 10:08:55 by claudia           #+#    #+#             */
-/*   Updated: 2025/12/02 12:07:21 by claudia          ###   ########.fr       */
+/*   Updated: 2025/12/10 17:53:49 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,16 @@
 
 #define CRLF "\r\n"
 
+#define RPL_WHOREPLY(server, nick, channel, user, host, server_name, nick_target, flags, realname) \
+	":" + server + " 352 " + nick + " " + channel + " " + user + " " + host + " " + server_name + " " + nick_target + " " + flags + " :0 " + realname
+
+#define RPL_ENDOFWHO(server, nick, channel) \
+	":" + server + " 315 " + nick + " " + channel + " :End of WHO list"
+
 #define RPL_WELCOME(server, nick, user, host, realname) \
-    (std::string(":") + server + " 001 " + nick + \
-    " :Welcome to the IRC server! " + nick + "!" + user + "@" + host + \
-    " (" + realname + ")" + CRLF)
+	(std::string(":") + server + " 001 " + nick + \
+	" :Welcome to the IRC server! " + nick + "!" + user + "@" + host + \
+	" (" + realname + ")" + CRLF)
 
 #define RPL_UMODEIS(nick, host, channel, set, mode, arg) \
 	(std::string(":") + nick + "!" + host + " MODE " + channel + " " + set + mode + " " + arg + CRLF)
@@ -162,7 +168,7 @@
 
 #define ERR_CHANOPRIVSNEEDED(server, nick, channel) \
 	(std::string(":") + server + " 482 " + nick + " " + channel + " :You're not a channel operator" CRLF)
-	
+
 #define ERR_NOPRIVILEGES(server, nick) \
 	(std::string(":") + server + " 481 " + nick + " :Permission Denied- You're not an IRC operator" CRLF)
 
@@ -181,5 +187,8 @@
 
 #define ERR_NOSUCHNICK(server, nick) \
 	(std::string(":") + server + " 401 * " + nick + " :No such nick/channel" CRLF)
+
+#define ERR_NOSUCHCHANNEL2(server, nick, channel) \
+    ":" + server + " 403 " + nick + " " + channel + " :No such channel\r\n"
 
 #endif
