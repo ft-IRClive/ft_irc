@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cgil <cgil@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:12:39 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/11 21:23:43 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/12 13:51:10 by cgil             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void Server::init(const std::string &port, const std::string &passwd)
 		_addServerSignal();
 		_setServerSocket();
 
-		std::cout << "Waiting to accept a connection...\n";
+		std::cout << GREEN << "Waiting to accept a connection...\n" << RESET;
 
 		_serverLoop();
 		_closeFds();
@@ -191,12 +191,12 @@ void Server::_closeFds()
 {
 	for (size_t i = 0; i < _clients.size(); i++)
 	{
-		std::cout << "Client [" << _clients[i]->getFd() << "] Disconnected"<< std::endl;
+		std::cout << "Client [" << _clients[i]->getFd() << "] Disconnected" << std::endl;
 		close(_clients[i]->getFd());
 	}
 	if (this->_fdPpalSocket != -1)
 	{
-		std::cout << "Server [" << this->_fdPpalSocket << "] Disconnected" << std::endl;
+		std::cout << RED << "Server [" << this->_fdPpalSocket << "] Disconnected" << RESET << std::endl;
 		close(this->_fdPpalSocket);
 	}
 }
