@@ -6,11 +6,9 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 15:29:14 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/11 21:41:28 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/12 17:02:48 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-#include "../../inc/Server.hpp"
 
 #include "../../inc/Server.hpp"
 #include "../../inc/Replies.hpp"
@@ -20,7 +18,6 @@ void Server::_handlerClientWho(const std::string &params, const int fd)
 	Client		*requester = _getClient(fd);
 	Channel		*channel;
 	std::string	reply;
-	std::string	endReply;
 
 	if (!requester)
 		return;
@@ -63,7 +60,5 @@ void Server::_handlerClientWho(const std::string &params, const int fd)
 
 		_sendResponse(fd, reply);
 	}
-
-	endReply = RPL_ENDOFWHO(_hostname, requester->getNname(), params);
-	_sendResponse(fd, endReply);
+	_sendResponse(fd, RPL_ENDOFWHO(_hostname, requester->getNname(), params));
 }
