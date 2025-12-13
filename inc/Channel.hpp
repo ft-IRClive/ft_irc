@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:22:03 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/11 20:09:21 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/13 12:02:24 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@
 
 class Channel
 {
-	private:
-
 	public:
 		Channel();
 		Channel(std::string name);

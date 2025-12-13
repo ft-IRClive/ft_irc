@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgil <cgil@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:12:39 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/12 13:51:10 by cgil             ###   ########.fr       */
+/*   Updated: 2025/12/13 10:52:49 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,8 +158,8 @@ bool Server::_isValidNickname(const std::string &nickname)
 		return (false);
 	for (std::string::const_iterator i = nickname.begin(); i != nickname.end(); i++)
 	{
-		if (!std::isalnum(*i))
-			return (false);
+		if (!std::isalnum(static_cast<unsigned char>(*i)))
+			return false;
 	}
 	return (true);
 }
