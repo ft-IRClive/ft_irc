@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cgil <cgil@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:18:18 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/11 21:21:27 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/15 16:40:55 by cgil             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,20 @@ void Server::_handlerClientTopic(const std::string &buffer, const int fd)
 	Channel						*channel;
 	std::string					newTopic;
 	std::string					msg;
+	size_t						pos;
 
 	if (!client)
 		return;
+
 	tokens = _splitBuffer(buffer, " ");
-	if (tokens.size() < 1)
+
+	// Missing channel
+	if (tokens.size() < 1 || tokens[0].empty())
 	{
 		_sendResponse(fd, ERR_MISSINGPARAMS(_hostname, client->getNname()));
 		return;
 	}
 
-	//Verify if the channel exists
 	channelName = tokens[0];
 	channel = _getChannel(channelName);
 	if (!channel)
@@ -38,26 +41,42 @@ void Server::_handlerClientTopic(const std::string &buffer, const int fd)
 		_sendResponse(fd, ERR_NOSUCHCHANNEL(_hostname, channelName));
 		return;
 	}
-	if (tokens[1].empty())
+
+	// Only show topic (no ':' means no modification)
+	if (buffer.find(':') == std::string::npos)
 	{
-		//Check if the channel has topic or not
 		if (channel->getChTopic().empty())
-			_sendResponse(fd, RPL_NOTOPIC(_hostname, client->getNname(), channelName));
+			_sendResponse(fd,
+				RPL_NOTOPIC(_hostname, client->getNname(), channelName));
 		else
-			_sendResponse(fd, RPL_TOPIC(_hostname, client->getNname(), channelName, channel->getChTopic()));
+			_sendResponse(fd,
+				RPL_TOPIC(_hostname, client->getNname(),
+					channelName, channel->getChTopic()));
 		return;
 	}
 
-	//If topic restricted and the client isn't operator
-	if (channel->getRestrictedTopic() && !channel->isChannelOperator(client->getNname()))
+	// Topic restricted to channel operators
+	if (channel->getRestrictedTopic()
+		&& !channel->isChannelOperator(client->getNname()))
 	{
-		_sendResponse(fd, ERR_CHANOPRIVSNEEDED(_hostname, client->getNname(), channelName));
+		_sendResponse(fd,
+			ERR_CHANOPRIVSNEEDED(_hostname,
+				client->getNname(), channelName));
 		return;
 	}
-	newTopic = buffer.substr(buffer.find(":", 1) + 1);
+
+	// Extract new topic (allows empty topic)
+	pos = buffer.find(':');
+	newTopic = buffer.substr(pos + 1);
+
 	channel->setTopic(newTopic);
-	msg =
-		":" + client->getNname() + "!" + client->getHostName() +
-		" TOPIC " + channelName + " :" + newTopic + CRLF;
+
+	msg = ":" + client->getNname() + "!" + client->getHostName()
+		+ " TOPIC " + channelName + " :" + newTopic + CRLF;
+
 	_broadcastToChannel(channelName, msg);
 }
+
+
+
+
