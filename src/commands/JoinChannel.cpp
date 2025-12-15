@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:15:56 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/11 21:04:43 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/13 14:07:58 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@ void Server::_handlerClientJoin(const std::string &buffer, const int fd)
 	std::string					key;
 	Channel						*channel;
 
-	if (params.empty())
+	if (params.empty() || params[0].empty())
 	{
-		_sendResponse(fd, ERR_MISSINGPARAMS(_getHostname(), client->getNname()));
+		_sendResponse(fd, ERR_SYNTAX_JOIN(_getHostname(), client->getNname()));
 		return;
 	}
 

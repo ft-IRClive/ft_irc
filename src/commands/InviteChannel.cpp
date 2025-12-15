@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:15:41 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/13 12:09:09 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/13 13:52:51 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void Server::_handlerClientInvite(const std::string &buffer, const int fd)
 	iss >> targetNickname >> channelName;
 	if (targetNickname.empty() || channelName.empty())
 	{
-		_sendResponse(fd, ERR_MISSINGPARAMS(_getHostname(), "INVITE"));
+		_sendResponse(fd, ERR_SYNTAX_JOIN(_getHostname(), "INVITE"));
 		return;
 	}
 

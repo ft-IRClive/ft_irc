@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:18:18 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/11 21:21:27 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/13 13:53:55 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void Server::_handlerClientTopic(const std::string &buffer, const int fd)
 	tokens = _splitBuffer(buffer, " ");
 	if (tokens.size() < 1)
 	{
-		_sendResponse(fd, ERR_MISSINGPARAMS(_hostname, client->getNname()));
+		_sendResponse(fd, ERR_SYNTAX_TOPIC(_hostname, client->getNname()));
 		return;
 	}
 

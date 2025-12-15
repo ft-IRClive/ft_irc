@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:17:18 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/11 21:14:00 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/13 13:53:30 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void Server::_handlerClientPart(const std::string &parameters, const int fd)
 	}
 	if (parameters.empty())
 	{
-		_sendResponse(fd, ERR_MISSINGPARAMS(server, nick));
+		_sendResponse(fd, ERR_SYNTAX_PART(server, nick));
 		_replyCode = 461;
 		return;
 	}

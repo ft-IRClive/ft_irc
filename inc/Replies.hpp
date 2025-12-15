@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 10:08:55 by claudia           #+#    #+#             */
-/*   Updated: 2025/12/11 21:39:59 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/13 13:52:18 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,8 +80,66 @@
 	(std::string(":") + server + " 472 " + nick + " " + channel + " " + mode + " :is not a recognised channel mode" CRLF)
 
 
-#define ERR_MISSINGPARAMS(server, nick) \
-	(std::string(":") + server + " 461 " + nick + " :Not enough parameters." CRLF)
+#define ERR_SYNTAX(server, nick, command, syntax) \
+	":" + server + " 461 " + nick + " " + command + \
+	" :Not enough parameters. Syntax: " + syntax + "\r\n"
+
+#define ERR_SYNTAX_PASS(server, nick) \
+	ERR_SYNTAX(server, nick, "PASS", "PASS <password>")
+
+
+#define ERR_SYNTAX_NICK(server, nick) \
+	ERR_SYNTAX(server, nick, "NICK", "NICK <nick>")
+
+
+#define ERR_SYNTAX_USER(server, nick) \
+	ERR_SYNTAX(server, nick, "USER", \
+	"USER <username> <hostname> <server> :<realname>")
+
+
+#define ERR_SYNTAX_JOIN(server, nick) \
+	ERR_SYNTAX(server, nick, "JOIN", \
+	"JOIN <#canal> [<clave>]")
+
+
+#define ERR_SYNTAX_PART(server, nick) \
+	ERR_SYNTAX(server, nick, "PART", \
+	"PART <#canal> [<mensaje>]")
+
+
+#define ERR_SYNTAX_TOPIC(server, nick) \
+	ERR_SYNTAX(server, nick, "TOPIC", \
+	"TOPIC <#canal> [:<nuevo topic>]")
+
+
+#define ERR_SYNTAX_PRIVMSG(server, nick) \
+	ERR_SYNTAX(server, nick, "PRIVMSG", \
+	"PRIVMSG <destino> :<mensaje>")
+
+
+#define ERR_SYNTAX_WHO(server, nick) \
+	ERR_SYNTAX(server, nick, "WHO", \
+	"WHO <#canal>")
+
+
+#define ERR_SYNTAX_QUIT(server, nick) \
+	ERR_SYNTAX(server, nick, "QUIT", \
+	"QUIT [:<mensaje>]")
+
+
+#define ERR_SYNTAX_KICK(server, nick) \
+	ERR_SYNTAX(server, nick, "KICK", \
+	"KICK <#canal> <nick> [<razón>]")
+
+
+#define ERR_SYNTAX_INVITE(server, nick) \
+	ERR_SYNTAX(server, nick, "INVITE", \
+	"INVITE <nick> <#canal>")
+
+
+#define ERR_SYNTAX_MODE(server, nick) \
+	ERR_SYNTAX(server, nick, "MODE", \
+	"MODE <target> <modes> [parameters...]")
 
 
 #define ERR_INVALIDNICK(server, nick) \

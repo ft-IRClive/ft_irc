@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:17:56 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/13 11:31:22 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/13 13:53:40 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,14 @@ void Server::_handlerClientPrivmsg(const std::string &buffer, const int fd)
 	spacePos = buffer.find(' ');
 	if (spacePos == std::string::npos)
 	{
-		_sendResponse(fd, ERR_MISSINGPARAMS(_hostname, sender->getNname()));
+		_sendResponse(fd, ERR_SYNTAX_PRIVMSG(_hostname, sender->getNname()));
 		return;
 	}
 	target = buffer.substr(0, spacePos);
 	textPos = buffer.find(":", spacePos);
 	if (textPos == std::string::npos)
 	{
-		_sendResponse(fd, ERR_MISSINGPARAMS(_hostname, sender->getNname()));
+		_sendResponse(fd, ERR_SYNTAX_PRIVMSG(_hostname, sender->getNname()));
 		return;
 	}
 	text = buffer.substr(textPos + 1);

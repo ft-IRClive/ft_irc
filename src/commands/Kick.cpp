@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:16:08 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/11 21:09:15 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/13 13:53:10 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void Server::_handlerClientKick(const std::string &buffer, const int fd)
 		reason = "No reason given";
 	if (channelName.empty() || targetNickname.empty())
 	{
-		_sendResponse(fd, ERR_MISSINGPARAMS(_getHostname(), "KICK"));
+		_sendResponse(fd, ERR_SYNTAX_KICK(_getHostname(), "KICK"));
 		return;
 	}
 

@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 15:29:14 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/12 17:02:48 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/13 13:54:17 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void Server::_handlerClientWho(const std::string &params, const int fd)
 		return;
 	if (params.empty())
 	{
-		_sendResponse(fd, ERR_MISSINGPARAMS(_hostname, requester->getNname()));
+		_sendResponse(fd, ERR_SYNTAX_WHO(_hostname, requester->getNname()));
 		return;
 	}
 
