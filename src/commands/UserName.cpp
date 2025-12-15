@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:18:27 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/11 21:19:01 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/13 13:54:11 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void Server::_handlerClientUsername(const std::string &parameters, const int fd)
 
 	if (parameters.empty())
 	{
-		_sendResponse(fd, ERR_MISSINGPARAMS(_getHostname(), "USER"));
+		_sendResponse(fd, ERR_SYNTAX_USER(_getHostname(), "USER"));
 		_replyCode = 461;
 		return;
 	}
@@ -56,7 +56,7 @@ void Server::_handlerClientUsername(const std::string &parameters, const int fd)
 	//Validate username
 	if (username.empty())
 	{
-		_sendResponse(fd, ERR_MISSINGPARAMS(_getHostname(), "USER"));
+		_sendResponse(fd, ERR_SYNTAX_USER(_getHostname(), "USER"));
 		_replyCode = 461;
 		return;
 	}

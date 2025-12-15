@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:15:41 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/13 12:09:09 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/15 16:15:19 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,37 +33,35 @@ void Server::_handlerClientInvite(const std::string &buffer, const int fd)
 	iss >> targetNickname >> channelName;
 	if (targetNickname.empty() || channelName.empty())
 	{
-		_sendResponse(fd, ERR_MISSINGPARAMS(_getHostname(), "INVITE"));
+		_sendResponse(fd, ERR_SYNTAX_JOIN(_getHostname(), "INVITE"));
 		return;
 	}
 
-	//Verify that the channel exists
+	//Verify that the channel and the client exist
 	channel = _getChannel(channelName);
 	if (!channel)
 	{
 		_sendResponse(fd, ERR_NOSUCHCHANNEL(_getHostname(), channelName));
 		return;
 	}
+	invitedClient = _getClient(targetNickname);
+	if (!invitedClient)
+	{
+		_sendResponse(fd, ERR_NOSUCHNICK(_getHostname(), targetNickname));
+		return;
+	}
 
-	//If the channel doesn't have clients
+	//If the channel doesn't have this client
 	if (!channel->hasClient(client))
 	{
 		_sendResponse(fd, ERR_NOTONCHANNEL(_getHostname(), channelName));
 		return;
 	}
 
-	//If this channel isn't operator
+	//If this client isn't operator
 	if (!channel->isChannelOperator(client->getNname()))
 	{
 		_sendResponse(fd, ERR_CHANOPRIVSNEEDED(_getHostname(), client->getNname(), channelName));
-		return;
-	}
-
-	//Verify that the invited client exists
-	invitedClient = _getClient(targetNickname);
-	if (!invitedClient)
-	{
-		_sendResponse(fd, ERR_NOSUCHNICK(_getHostname(), targetNickname));
 		return;
 	}
 

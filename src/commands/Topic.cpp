@@ -14,36 +14,37 @@
 
 void Server::_handlerClientTopic(const std::string &buffer, const int fd)
 {
-	Client						*client = _getClient(fd);
-	std::vector<std::string>	tokens;
-	std::string					channelName;
-	Channel						*channel;
-	std::string					newTopic;
-	std::string					msg;
-	size_t						pos;
+	Client				*client = _getClient(fd);
+	std::istringstream	iss(buffer);
+	std::string			channelName;
+	Channel				*channel;
+	std::string			newTopic;
+	std::string			msg;
 
 	if (!client)
 		return;
 
-	tokens = _splitBuffer(buffer, " ");
-
-	// Missing channel
-	if (tokens.size() < 1 || tokens[0].empty())
+	if (!client || !client->getIsLogged())
 	{
-		_sendResponse(fd, ERR_MISSINGPARAMS(_hostname, client->getNname()));
+		_sendResponse(fd, ERR_NOTREGISTERED(_getHostname(), "*"));
 		return;
 	}
 
-	channelName = tokens[0];
+	iss >> channelName >> newTopic;
+	if (channelName.empty())
+	{
+		_sendResponse(fd, ERR_SYNTAX_TOPIC(_hostname, client->getNname()));
+		return;
+	}
+
 	channel = _getChannel(channelName);
 	if (!channel)
 	{
 		_sendResponse(fd, ERR_NOSUCHCHANNEL(_hostname, channelName));
 		return;
 	}
-
-	// Only show topic (no ':' means no modification)
-	if (buffer.find(':') == std::string::npos)
+ 
+	if (newTopic.empty())
 	{
 		if (channel->getChTopic().empty())
 			_sendResponse(fd,
@@ -76,7 +77,3 @@ void Server::_handlerClientTopic(const std::string &buffer, const int fd)
 
 	_broadcastToChannel(channelName, msg);
 }
-
-
-
-

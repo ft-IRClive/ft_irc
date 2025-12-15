@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 15:09:01 by claudia           #+#    #+#             */
-/*   Updated: 2025/12/11 21:15:53 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/13 13:53:48 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void Server::_handlerClientPassword(const std::string &password, const int fd)
 
 	if (password.empty())
 	{
-		_sendResponse(fd, ERR_MISSINGPARAMS(_getHostname(), "PASSWORD"));
+		_sendResponse(fd, ERR_SYNTAX_PASS(_getHostname(), "PASSWORD"));
 		_replyCode = 461;
 		return ;
 	}

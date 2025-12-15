@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:16:41 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/11 21:38:17 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/13 13:53:24 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void Server::_handlerClientNickname(const std::string &nickname, const int fd)
 
 	if (nickname.empty())
 	{
-		_sendResponse(fd, ERR_MISSINGPARAMS(_getHostname(), "NICK"));
+		_sendResponse(fd, ERR_SYNTAX_NICK(_getHostname(), "NICK"));
 		_replyCode = 461;
 		return ;
 	}

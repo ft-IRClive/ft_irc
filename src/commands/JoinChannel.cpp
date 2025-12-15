@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:15:56 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/11 21:04:43 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/15 16:17:25 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,28 +14,27 @@
 
 void Server::_handlerClientJoin(const std::string &buffer, const int fd)
 {
-	Client						*client = _getClient(fd);
-	std::vector<std::string>	params = _splitBuffer(buffer, SPACE);
-	std::string					channelName;
-	std::string					key;
-	Channel						*channel;
+	Client				*client = _getClient(fd);
+	std::istringstream	iss(buffer);
+	std::string			channelName;
+	std::string			key;
+	Channel				*channel;
 
-	if (params.empty())
+	if (!client || !client->getIsLogged())
 	{
-		_sendResponse(fd, ERR_MISSINGPARAMS(_getHostname(), client->getNname()));
+		_sendResponse(fd, ERR_NOTREGISTERED(_getHostname(), "*"));
 		return;
 	}
 
-	//Verify that the client is logged correctly
-	if (!client->getIsLogged())
+	//Extract the name of the channel and the key
+	iss >> channelName >> key;
+	if (channelName.empty())
 	{
-		_sendResponse(fd, ERR_NOTREGISTERED(_getHostname(), client->getNname()));
+		_sendResponse(fd, ERR_SYNTAX_JOIN(_getHostname(), client->getNname()));
 		return;
 	}
 
 	//Verify that the channel is correct
-	channelName = params[0];
-	key = (params.size() > 1) ? params[1] : "";
 	if (channelName.empty() || channelName[0] != '#')
 	{
 		_sendResponse(fd, ERR_BADCHANMASK(_getHostname(), client->getNname(), channelName));

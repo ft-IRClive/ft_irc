@@ -6,36 +6,45 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 15:29:14 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/12 17:02:48 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/15 16:31:42 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/Server.hpp"
 #include "../../inc/Replies.hpp"
 
-void Server::_handlerClientWho(const std::string &params, const int fd)
+void Server::_handlerClientWho(const std::string &buffer, const int fd)
 {
-	Client		*requester = _getClient(fd);
-	Channel		*channel;
-	std::string	reply;
+	Client				*requester = _getClient(fd);
+	std::istringstream	iss(buffer);
+	std::string			channelName;
+	Channel				*channel;
 
-	if (!requester)
-		return;
-	if (params.empty())
+	//Verify if the client is logged correctly
+	if (!requester || !requester->getIsLogged())
 	{
-		_sendResponse(fd, ERR_MISSINGPARAMS(_hostname, requester->getNname()));
+		_sendResponse(fd, ERR_NOTREGISTERED(_getHostname(), "*"));
+		return;
+	}
+
+	//Extract channel name
+	iss >> channelName;
+
+	if (channelName.empty())
+	{
+		_sendResponse(fd, ERR_SYNTAX_WHO(_getHostname(), requester->getNname()));
 		return;
 	}
 
 	//Verify if the channel exists
-	channel = _getChannel(params);
+	channel = _getChannel(channelName);
 	if (!channel)
 	{
-		_sendResponse(fd, ERR_NOSUCHCHANNEL(_hostname, params));
+		_sendResponse(fd, ERR_NOSUCHCHANNEL(_getHostname(), channelName));
 		return;
 	}
 
-	//Get all the clients
+	//Get all the clients in the channel
 	const std::vector<Client*> &clients = channel->getChClients();
 	for (std::vector<Client*>::const_iterator it = clients.begin(); it != clients.end(); ++it)
 	{
@@ -43,22 +52,22 @@ void Server::_handlerClientWho(const std::string &params, const int fd)
 		if (!c)
 			continue;
 
-		std::string	prefix = channel->isChannelOperator(c->getNname()) ? "@" : "";
-		std::string	status = "H" + prefix;
+		std::string prefix = channel->isChannelOperator(c->getNname()) ? "@" : "";
+		std::string status = "H" + prefix;
 
-		reply = RPL_WHOREPLY(
-			_hostname,
+		std::string reply = RPL_WHOREPLY(
+			_getHostname(),
 			requester->getNname(),
-			params,
+			channelName,
 			c->getUname(),
 			c->getHostName(),
-			_hostname,
+			_getHostname(),
 			c->getNname(),
 			status,
 			c->getRealName()
 		);
-
 		_sendResponse(fd, reply);
 	}
-	_sendResponse(fd, RPL_ENDOFWHO(_hostname, requester->getNname(), params));
+
+	_sendResponse(fd, RPL_ENDOFWHO(_getHostname(), requester->getNname(), channelName));
 }
