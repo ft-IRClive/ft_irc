@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cgil <cgil@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:16:24 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/11 21:10:52 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/15 11:32:43 by cgil             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,22 +76,28 @@ void Server::_handlerClientMode(const std::string &buffer, const int fd)
 
 bool _processFlagsMode(const std::string& modeFlags, Channel* channel, Client* client, const std::string& arg)
 {
-	bool	addMode = false;
-	char	mode = 0;
-	char	flag;
-
+	bool addMode = false;
+	bool expectMode = false;
+	
 	for (size_t i = 0; i < modeFlags.size(); i++)
 	{
-		flag = modeFlags[i];
+		char flag = modeFlags[i];
 		if (flag == '+' || flag == '-')
+		{
+			if (expectMode)
+				return (false);
 			addMode = (flag == '+');
+			expectMode = true;
+		}
 		else
 		{
-			mode = flag;
-			if (!_applyModeFlag(channel, client, mode, addMode, arg))
+			expectMode = false;
+			if (!_applyModeFlag(channel, client, flag, addMode, arg))
 				return (false);
 		}
 	}
+	if (expectMode)
+			return (false);
 	return (true);
 }
 
