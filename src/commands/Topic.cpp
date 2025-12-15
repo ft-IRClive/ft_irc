@@ -3,23 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   Topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgil <cgil@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:18:18 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/15 16:40:55 by cgil             ###   ########.fr       */
+/*   Updated: 2025/12/15 17:10:39 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/Server.hpp"
+#include "../../inc/Replies.hpp"
 
 void Server::_handlerClientTopic(const std::string &buffer, const int fd)
 {
-	Client				*client = _getClient(fd);
+	Client						*client = _getClient(fd);
 	std::istringstream	iss(buffer);
-	std::string			channelName;
-	Channel				*channel;
-	std::string			newTopic;
-	std::string			msg;
+	std::string					channelName;
+	Channel						*channel;
+	std::string					newTopic;
+	std::string					msg;
+	size_t						pos;
 
 	if (!client)
 		return;
@@ -30,6 +32,7 @@ void Server::_handlerClientTopic(const std::string &buffer, const int fd)
 		return;
 	}
 
+	// Missing channel
 	iss >> channelName >> newTopic;
 	if (channelName.empty())
 	{
@@ -43,8 +46,9 @@ void Server::_handlerClientTopic(const std::string &buffer, const int fd)
 		_sendResponse(fd, ERR_NOSUCHCHANNEL(_hostname, channelName));
 		return;
 	}
- 
-	if (newTopic.empty())
+
+	// Only show topic (no ':' means no modification)
+	if (buffer.find(':') == std::string::npos)
 	{
 		if (channel->getChTopic().empty())
 			_sendResponse(fd,
