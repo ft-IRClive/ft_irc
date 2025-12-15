@@ -6,56 +6,63 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:17:56 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/13 13:53:40 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/15 16:28:06 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/Server.hpp"
+#include "../../inc/Replies.hpp"
 
 void Server::_handlerClientPrivmsg(const std::string &buffer, const int fd)
 {
-	Client		*sender = _getClient(fd);
-	size_t		spacePos;
-	std::string	target;
-	size_t		textPos;
-	std::string	text;
-	Channel		*channel;
-	std::string	msg;
-	Client		*receiver;
+	Client				*sender = _getClient(fd);
+	std::istringstream	iss(buffer);
+	std::string			target;
+	std::string			text;
+	Channel				*channel;
+	Client				*receiver;
+	std::string			msg;
 
-	if (!sender)
-		return;
-	spacePos = buffer.find(' ');
-	if (spacePos == std::string::npos)
+	//Verify if the client is logged correctly
+	if (!sender || !sender->getIsLogged())
 	{
-		_sendResponse(fd, ERR_SYNTAX_PRIVMSG(_hostname, sender->getNname()));
+		_sendResponse(fd, ERR_NOTREGISTERED(_getHostname(), "*"));
 		return;
 	}
-	target = buffer.substr(0, spacePos);
-	textPos = buffer.find(":", spacePos);
-	if (textPos == std::string::npos)
+
+	//Extract target and text
+	iss >> target;
+	std::getline(iss >> std::ws, text);
+
+	//Remove ':' if present at the beginning
+	if (!text.empty() && text[0] == ':')
+		text = text.substr(1);
+
+	//Validate parameters
+	if (target.empty() || text.empty())
 	{
-		_sendResponse(fd, ERR_SYNTAX_PRIVMSG(_hostname, sender->getNname()));
+		_sendResponse(fd, ERR_SYNTAX_PRIVMSG(_getHostname(), sender->getNname()));
 		return;
 	}
-	text = buffer.substr(textPos + 1);
 
 	//Private message to a channel
-	if (!target.empty() && target[0] == '#')
+	if (target[0] == '#')
 	{
 		//Verify that the channel exists
 		channel = _getChannel(target);
 		if (!channel)
 		{
-			_sendResponse(fd, ERR_NOSUCHCHANNEL(_hostname, target));
+			_sendResponse(fd, ERR_NOSUCHCHANNEL(_getHostname(), target));
 			return;
 		}
-		//Verify that the channel has this client
-		if (!channel->isClientInChannel(sender->getNname()))
+
+		//Verify that the sender is in the channel
+		if (!channel->hasClient(sender))
 		{
-			_sendResponse(fd, ERR_NOTONCHANNEL(_hostname, target));
+			_sendResponse(fd, ERR_NOTONCHANNEL(_getHostname(), target));
 			return;
 		}
+
 		msg = RPL_PRIVMSG(sender->getNname(), sender->getHostName(), target, text);
 		_broadcastToChannel(target, msg, fd);
 	}
@@ -65,9 +72,11 @@ void Server::_handlerClientPrivmsg(const std::string &buffer, const int fd)
 		receiver = _getClient(target);
 		if (!receiver)
 		{
-			_sendResponse(fd, ERR_NOSUCHNICK(_hostname, target));
+			_sendResponse(fd, ERR_NOSUCHNICK(_getHostname(), target));
 			return;
 		}
-		_sendResponse(receiver->getFd(), RPL_PRIVMSG(sender->getNname(), sender->getHostName(), receiver->getNname(), text));
+
+		msg = RPL_PRIVMSG(sender->getNname(), sender->getHostName(), receiver->getNname(), text);
+		_sendResponse(receiver->getFd(), msg);
 	}
 }

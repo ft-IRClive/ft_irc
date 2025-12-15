@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:16:24 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/15 15:28:01 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/15 16:53:26 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ bool	_applyModeFlag(Channel* channel, Client* client, char mode, bool addMode, c
 void	_setInviteOnlyMode(Channel* channel, bool addMode);
 void	_setTopicRestrictionMode(Channel* channel, bool addMode);
 void	_setChannelKeyMode(Channel* channel, const std::string& key, bool addMode);
-void	_setChannelOperatorMode(Channel* channel, Client* client, bool addMode);
+bool	_setChannelOperatorMode(Channel* channel, Client* client, bool addMode);
 void	_setChannelLimitMode(Channel* channel, const std::string& limitStr, bool addMode);
 
 void Server::_handlerClientMode(const std::string &buffer, const int fd)
@@ -29,49 +29,52 @@ void Server::_handlerClientMode(const std::string &buffer, const int fd)
 	std::string			argStr;
 	std::string			modeMsg;
 
-	//Extract the name of the channel, the flags and the argument
-	iss >> channelName >> modeFlags;
-	iss >> argument;
 	client = _getClient(fd);
-	channel = _getChannel(channelName);
-	if (modeFlags.empty())
+
+	//Verify if the client is logged correctly
+	if (!client || !client->getIsLogged())
 	{
-		_replyCode = 461;
+		_sendResponse(fd, ERR_NOTREGISTERED(_getHostname(), "*"));
 		return;
 	}
+
+	//Extract the name of the channel, the flags and the argument
+	iss >> channelName >> modeFlags >> argument;
+
 	if (channelName.empty() || modeFlags.empty())
 	{
 		_sendResponse(fd, ERR_SYNTAX_MODE(_getHostname(), client->getNname()));
-		_replyCode = 461;
+		return;
 	}
-	else if (!channel)
+
+	channel = _getChannel(channelName);
+	if (!channel)
 	{
 		_sendResponse(fd, ERR_NOSUCHCHANNEL(_getHostname(), channelName));
-		_replyCode = 403;
+		return;
 	}
+
 	//Verify that is operator
-	else if (!channel->isChannelOperator(client->getNname()))
+	if (!channel->isChannelOperator(client->getNname()))
 	{
 		_sendResponse(fd, ERR_CHANOPRIVSNEEDED(_getHostname(), client->getNname(), channelName));
-		_replyCode = 482;
+		return;
 	}
-	else if (!_processFlagsMode( modeFlags, channel, _getClient(argument), argument))
+
+	if (!_processFlagsMode(modeFlags, channel, _getClient(argument), argument))
 	{
 		_sendResponse(fd, ERR_UNKNOWNMODE(_getHostname(), client->getNname(), channel->getChName(), modeFlags[1]));
-		_replyCode = 472;
+		return;
 	}
-	else
-	{
-		argStr = argument.empty() ? "" : argument;
-		modeMsg = RPL_CHANGEMODE(
-			client->getHostName(),
-			channel->getChName(),
-			modeFlags,
-			argStr
-		);
-		_broadcastToChannel(channelName, modeMsg, -1);
-		_replyCode = 200;
-	}
+
+	argStr = argument.empty() ? "" : argument;
+	modeMsg = RPL_CHANGEMODE(
+		client->getHostName(),
+		channel->getChName(),
+		modeFlags,
+		argStr
+	);
+	_broadcastToChannel(channelName, modeMsg, -1);
 }
 
 bool _processFlagsMode(const std::string& modeFlags, Channel* channel, Client* client, const std::string& arg)
@@ -97,7 +100,7 @@ bool _processFlagsMode(const std::string& modeFlags, Channel* channel, Client* c
 		}
 	}
 	if (expectMode)
-			return (false);
+		return (false);
 	return (true);
 }
 
@@ -115,7 +118,8 @@ bool _applyModeFlag(Channel* channel, Client* client, char mode, bool addMode, c
 			_setChannelKeyMode(channel, arg, addMode);
 			break;
 		case 'o':
-			_setChannelOperatorMode(channel, client, addMode);
+			if (!_setChannelOperatorMode(channel, client, addMode))
+				return (false);
 			break;
 		case 'l':
 			_setChannelLimitMode(channel, arg, addMode);
@@ -123,7 +127,7 @@ bool _applyModeFlag(Channel* channel, Client* client, char mode, bool addMode, c
 		default:
 			return (false);
 	}
-	return(true);
+	return (true);
 }
 
 void _setInviteOnlyMode(Channel* channel, bool addMode)
@@ -150,12 +154,22 @@ void _setChannelKeyMode(Channel* channel, const std::string& key, bool addMode)
 		channel->removeKey();
 }
 
-void _setChannelOperatorMode(Channel* channel, Client* client, bool addMode)
+bool _setChannelOperatorMode(Channel* channel, Client* client, bool addMode)
 {
-	if (addMode && client)
+	// Verificar que el cliente existe
+	if (!client)
+		return (false);
+
+	// Verificar que el cliente está en el canal
+	if (!channel->hasClient(client))
+		return (false);
+
+	if (addMode)
 		channel->setChannelOperator(client);
-	else if (client)
+	else
 		channel->removeChannelOperator(client);
+
+	return (true);
 }
 
 void _setChannelLimitMode(Channel* channel, const std::string& limitStr, bool addMode)

@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:16:08 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/13 13:53:10 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/15 16:23:49 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void Server::_handlerClientKick(const std::string &buffer, const int fd)
 {
 	Client				*client = _getClient(fd);
 	std::istringstream	iss(buffer);
-	std::string			prefix, command, channelName, targetNickname, reason;
+	std::string			channelName, targetNickname, reason;
 	Channel				*channel;
 	Client				*targetClient;
 	std::string			kickMsg;
@@ -24,20 +24,17 @@ void Server::_handlerClientKick(const std::string &buffer, const int fd)
 	//Verify if the client is logged correctly
 	if (!client || !client->getIsLogged())
 	{
-		std::string nick = (client ? client->getNname() : "*");
-		_sendResponse(fd, ERR_NOTREGISTERED(_getHostname(), nick));
+		_sendResponse(fd, ERR_NOTREGISTERED(_getHostname(), "*"));
 		return;
 	}
-	if (!buffer.empty() && buffer[0] == ':')
-		iss >> prefix;
 
-	//Extract the name of the command
-	iss >> command;
-
-	//Verify the name of the channel and the nickname are correct
+	//Extract channel name and target nickname
 	iss >> channelName >> targetNickname;
-	if (!targetNickname.empty() && targetNickname[0] == ':')
-		targetNickname.erase(0, 1);
+	if (channelName.empty() || targetNickname.empty())
+	{
+		_sendResponse(fd, ERR_SYNTAX_KICK(_getHostname(), client->getNname()));
+		return;
+	}
 
 	//Extract the reason (if exists)
 	std::getline(iss >> std::ws, reason);
@@ -45,11 +42,6 @@ void Server::_handlerClientKick(const std::string &buffer, const int fd)
 		reason = reason.substr(1);
 	if (reason.empty())
 		reason = "No reason given";
-	if (channelName.empty() || targetNickname.empty())
-	{
-		_sendResponse(fd, ERR_SYNTAX_KICK(_getHostname(), "KICK"));
-		return;
-	}
 
 	//Get the channel
 	channel = _getChannel(channelName);

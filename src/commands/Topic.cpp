@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:18:18 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/13 13:53:55 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/15 16:29:57 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,31 +14,37 @@
 
 void Server::_handlerClientTopic(const std::string &buffer, const int fd)
 {
-	Client						*client = _getClient(fd);
-	std::vector<std::string>	tokens;
-	std::string					channelName;
-	Channel						*channel;
-	std::string					newTopic;
-	std::string					msg;
+	Client				*client = _getClient(fd);
+	std::istringstream	iss(buffer);
+	std::string			channelName;
+	Channel				*channel;
+	std::string			newTopic;
+	std::string			msg;
 
 	if (!client)
 		return;
-	tokens = _splitBuffer(buffer, " ");
-	if (tokens.size() < 1)
+
+	if (!client || !client->getIsLogged())
+	{
+		_sendResponse(fd, ERR_NOTREGISTERED(_getHostname(), "*"));
+		return;
+	}
+
+	iss >> channelName >> newTopic;
+	if (channelName.empty())
 	{
 		_sendResponse(fd, ERR_SYNTAX_TOPIC(_hostname, client->getNname()));
 		return;
 	}
 
 	//Verify if the channel exists
-	channelName = tokens[0];
 	channel = _getChannel(channelName);
 	if (!channel)
 	{
 		_sendResponse(fd, ERR_NOSUCHCHANNEL(_hostname, channelName));
 		return;
 	}
-	if (tokens[1].empty())
+	if (newTopic.empty())
 	{
 		//Check if the channel has topic or not
 		if (channel->getChTopic().empty())

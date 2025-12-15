@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 10:08:55 by claudia           #+#    #+#             */
-/*   Updated: 2025/12/13 13:52:18 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/15 15:40:01 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,66 +80,64 @@
 	(std::string(":") + server + " 472 " + nick + " " + channel + " " + mode + " :is not a recognised channel mode" CRLF)
 
 
-#define ERR_SYNTAX(server, nick, command, syntax) \
-	":" + server + " 461 " + nick + " " + command + \
-	" :Not enough parameters. Syntax: " + syntax + "\r\n"
-
 #define ERR_SYNTAX_PASS(server, nick) \
-	ERR_SYNTAX(server, nick, "PASS", "PASS <password>")
+	(std::string(":") + server + " 461 " + nick + " PASS" + \
+	" :Not enough parameters. Syntax: PASS <password>" + CRLF)
 
 
 #define ERR_SYNTAX_NICK(server, nick) \
-	ERR_SYNTAX(server, nick, "NICK", "NICK <nick>")
+	(std::string(":") + server + " 461 " + nick + " NICK" + \
+	" :Not enough parameters. Syntax: NICK <nick>" + CRLF)
 
 
 #define ERR_SYNTAX_USER(server, nick) \
-	ERR_SYNTAX(server, nick, "USER", \
-	"USER <username> <hostname> <server> :<realname>")
+	(std::string(":") + server + " 461 " + nick + " USER" + \
+	" :Not enough parameters. Syntax: USER <username> <hostname> <server> :<realname>" + CRLF)
 
 
 #define ERR_SYNTAX_JOIN(server, nick) \
-	ERR_SYNTAX(server, nick, "JOIN", \
-	"JOIN <#canal> [<clave>]")
+	(std::string(":") + server + " 461 " + nick + " JOIN" + \
+	" :Not enough parameters. Syntax: JOIN <#canal> [<clave>]" + CRLF)
 
 
 #define ERR_SYNTAX_PART(server, nick) \
-	ERR_SYNTAX(server, nick, "PART", \
-	"PART <#canal> [<mensaje>]")
+	(std::string(":") + server + " 461 " + nick + " PART" + \
+	" :Not enough parameters. Syntax: PART <#canal> [<mensaje>]" + CRLF)
 
 
 #define ERR_SYNTAX_TOPIC(server, nick) \
-	ERR_SYNTAX(server, nick, "TOPIC", \
-	"TOPIC <#canal> [:<nuevo topic>]")
+	(std::string(":") + server + " 461 " + nick + " TOPIC" + \
+	" :Not enough parameters. Syntax: TOPIC <#canal> [:<nuevo topic>]" + CRLF)
 
 
 #define ERR_SYNTAX_PRIVMSG(server, nick) \
-	ERR_SYNTAX(server, nick, "PRIVMSG", \
-	"PRIVMSG <destino> :<mensaje>")
+	(std::string(":") + server + " 461 " + nick + " PRIVMSG" + \
+	" :Not enough parameters. Syntax: PRIVMSG <destino> :<mensaje>" + CRLF)
 
 
 #define ERR_SYNTAX_WHO(server, nick) \
-	ERR_SYNTAX(server, nick, "WHO", \
-	"WHO <#canal>")
+	(std::string(":") + server + " 461 " + nick + " WHO" + \
+	" :Not enough parameters. Syntax: WHO <#channel>" + CRLF)
 
 
 #define ERR_SYNTAX_QUIT(server, nick) \
-	ERR_SYNTAX(server, nick, "QUIT", \
-	"QUIT [:<mensaje>]")
+	(std::string(":") + server + " 461 " + nick + " QUIT" + \
+	" :Not enough parameters. Syntax: QUIT [:<mensaje>]" + CRLF)
 
 
 #define ERR_SYNTAX_KICK(server, nick) \
-	ERR_SYNTAX(server, nick, "KICK", \
-	"KICK <#canal> <nick> [<razón>]")
+	(std::string(":") + server + " 461 " + nick + " KICK" + \
+	" :Not enough parameters. Syntax: KICK <#canal> <nick> [<razón>]" + CRLF)
 
 
 #define ERR_SYNTAX_INVITE(server, nick) \
-	ERR_SYNTAX(server, nick, "INVITE", \
-	"INVITE <nick> <#canal>")
+	(std::string(":") + server + " 461 " + nick + " INVITE" + \
+	" :Not enough parameters. Syntax: INVITE <nick> <#canal>" + CRLF)
 
 
 #define ERR_SYNTAX_MODE(server, nick) \
-	ERR_SYNTAX(server, nick, "MODE", \
-	"MODE <target> <modes> [parameters...]")
+	(std::string(":") + server + " 461 " + nick + " MODE" + \
+	" :Not enough parameters. Syntax: MODE <target> <modes> [parameters...]" + CRLF)
 
 
 #define ERR_INVALIDNICK(server, nick) \
