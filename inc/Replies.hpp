@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cgil <cgil@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 10:08:55 by claudia           #+#    #+#             */
-/*   Updated: 2025/12/15 15:40:01 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/17 13:09:14 by cgil             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@
 	(std::string(":") + server + " 331 " + nick + " " + channel + " :No topic is set" CRLF)
 
 
-#define RPL_KICK(host, channel, kicker, kicked, comment) \
-	(std::string(":") + host + " KICK " + channel + " " + kicked + " :" + kicker + " " + comment + CRLF)
+	#define RPL_KICK(host, channel, kicker, kicked, comment) \
+	(std::string(":") + host + " KICK " + channel + " " + kicked + " :" + comment + CRLF)
 
 
 #define RPL_INVITING(host, channel, inviter, invited) \
