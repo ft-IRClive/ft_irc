@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:16:24 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/15 16:53:26 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/17 11:29:35 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	_setInviteOnlyMode(Channel* channel, bool addMode);
 void	_setTopicRestrictionMode(Channel* channel, bool addMode);
 void	_setChannelKeyMode(Channel* channel, const std::string& key, bool addMode);
 bool	_setChannelOperatorMode(Channel* channel, Client* client, bool addMode);
-void	_setChannelLimitMode(Channel* channel, const std::string& limitStr, bool addMode);
+bool	_setChannelLimitMode(Channel* channel, const std::string& limitStr, bool addMode);
 
 void Server::_handlerClientMode(const std::string &buffer, const int fd)
 {
@@ -122,7 +122,8 @@ bool _applyModeFlag(Channel* channel, Client* client, char mode, bool addMode, c
 				return (false);
 			break;
 		case 'l':
-			_setChannelLimitMode(channel, arg, addMode);
+			if (!_setChannelLimitMode(channel, arg, addMode))
+				return (false);
 			break;
 		default:
 			return (false);
@@ -172,13 +173,40 @@ bool _setChannelOperatorMode(Channel* channel, Client* client, bool addMode)
 	return (true);
 }
 
-void _setChannelLimitMode(Channel* channel, const std::string& limitStr, bool addMode)
+bool _isValidNumber(const std::string& str)
+{
+	if (str.empty())
+		return (false);
+
+	for (size_t i = 0; i < str.length(); i++)
+	{
+		if (!std::isdigit(str[i]))
+			return (false);
+	}
+	return (true);
+}
+
+bool _setChannelLimitMode(Channel* channel, const std::string& limitStr, bool addMode)
 {
 	if (addMode)
 	{
-		if (!limitStr.empty())
-			channel->setLimit(std::atoi(limitStr.c_str()));
+		if (limitStr.empty())
+			return (false);
+
+		// Validar que sea un número válido
+		if (!_isValidNumber(limitStr))
+			return (false);
+
+		int limit = std::atoi(limitStr.c_str());
+
+		// Validar que sea positivo
+		if (limit <= 0)
+			return (false);
+
+		channel->setLimit(limit);
 	}
 	else
 		channel->removeLimit();
+
+	return (true);
 }
