@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:17:56 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/15 16:28:06 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/17 11:46:52 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ void Server::_handlerClientPrivmsg(const std::string &buffer, const int fd)
 	//Private message to a channel
 	if (target[0] == '#')
 	{
-		//Verify that the channel exists
 		channel = _getChannel(target);
 		if (!channel)
 		{
@@ -56,7 +55,6 @@ void Server::_handlerClientPrivmsg(const std::string &buffer, const int fd)
 			return;
 		}
 
-		//Verify that the sender is in the channel
 		if (!channel->hasClient(sender))
 		{
 			_sendResponse(fd, ERR_NOTONCHANNEL(_getHostname(), target));

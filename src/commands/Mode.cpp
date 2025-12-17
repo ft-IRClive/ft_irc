@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:16:24 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/17 11:29:35 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/17 16:52:48 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,31 +22,35 @@ bool	_setChannelLimitMode(Channel* channel, const std::string& limitStr, bool ad
 
 void Server::_handlerClientMode(const std::string &buffer, const int fd)
 {
+	Client				*client = _getClient(fd);
 	std::istringstream	iss(buffer);
-	std::string			channelName, modeFlags, argument;
-	Client*				client;
-	Channel*			channel;
-	std::string			argStr;
-	std::string			modeMsg;
+	std::string			channelName;
+	std::string			modeFlags;
+	std::string			argument;
+	Channel				*channel;
 
-	client = _getClient(fd);
-
-	//Verify if the client is logged correctly
+	// Check if the client is correctly logged
 	if (!client || !client->getIsLogged())
 	{
 		_sendResponse(fd, ERR_NOTREGISTERED(_getHostname(), "*"));
 		return;
 	}
 
-	//Extract the name of the channel, the flags and the argument
 	iss >> channelName >> modeFlags >> argument;
 
-	if (channelName.empty() || modeFlags.empty())
+	if (channelName.empty())
 	{
 		_sendResponse(fd, ERR_SYNTAX_MODE(_getHostname(), client->getNname()));
 		return;
 	}
 
+	if (channelName[0] != '#')
+	{
+		_sendResponse(fd, ERR_SYNTAX_MODE(_getHostname(), client->getNname()));
+		return;
+	}
+
+	// Verify if the channel exists
 	channel = _getChannel(channelName);
 	if (!channel)
 	{
@@ -54,37 +58,54 @@ void Server::_handlerClientMode(const std::string &buffer, const int fd)
 		return;
 	}
 
-	//Verify that is operator
+	if (modeFlags.empty())
+	{
+		_sendResponse(fd,
+			":" + _getHostname() + " 324 " +
+			client->getNname() + " " +
+			channelName + " " +
+			channel->getModes() + "\r\n"
+		);
+		return;
+	}
+
 	if (!channel->isChannelOperator(client->getNname()))
 	{
-		_sendResponse(fd, ERR_CHANOPRIVSNEEDED(_getHostname(), client->getNname(), channelName));
+		_sendResponse(fd,
+			ERR_CHANOPRIVSNEEDED(
+				_getHostname(),
+				client->getNname(),
+				channelName
+			)
+		);
 		return;
 	}
 
 	if (!_processFlagsMode(modeFlags, channel, _getClient(argument), argument))
 	{
-		_sendResponse(fd, ERR_UNKNOWNMODE(_getHostname(), client->getNname(), channel->getChName(), modeFlags[1]));
+		_sendResponse(fd, ERR_UNKNOWNMODE(_getHostname(), client->getNname(), channelName, modeFlags[1]));
 		return;
 	}
 
-	argStr = argument.empty() ? "" : argument;
-	modeMsg = RPL_CHANGEMODE(
+	std::string argStr = argument.empty() ? "" : argument;
+	std::string modeMsg = RPL_CHANGEMODE(
 		client->getHostName(),
 		channel->getChName(),
 		modeFlags,
 		argStr
 	);
+
 	_broadcastToChannel(channelName, modeMsg, -1);
 }
 
 bool _processFlagsMode(const std::string& modeFlags, Channel* channel, Client* client, const std::string& arg)
 {
-	bool addMode = false;
-	bool expectMode = false;
+	bool	addMode = false;
+	bool	expectMode = false;
 
 	for (size_t i = 0; i < modeFlags.size(); i++)
 	{
-		char flag = modeFlags[i];
+		char	flag = modeFlags[i];
 		if (flag == '+' || flag == '-')
 		{
 			if (expectMode)
@@ -193,13 +214,11 @@ bool _setChannelLimitMode(Channel* channel, const std::string& limitStr, bool ad
 		if (limitStr.empty())
 			return (false);
 
-		// Validar que sea un número válido
 		if (!_isValidNumber(limitStr))
 			return (false);
 
-		int limit = std::atoi(limitStr.c_str());
+		int	limit = std::atoi(limitStr.c_str());
 
-		// Validar que sea positivo
 		if (limit <= 0)
 			return (false);
 

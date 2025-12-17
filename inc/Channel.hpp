@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:22:03 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/13 12:02:24 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/17 16:52:22 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ class Channel
 		bool	isChannelInviteOnly(void) const;
 		bool	isChannelOperator(std::string nickname) const;
 		bool	isClientInChannel(std::string nickname);
+
+		std::string getModes() const;
 
 	private:
 		int						_limit; //User limit

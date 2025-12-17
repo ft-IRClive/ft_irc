@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:11:42 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/11 20:44:30 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/17 16:52:45 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -270,4 +270,20 @@ bool Channel::isChannelInviteOnly(void) const
 void Channel::setTopic(std::string topic)
 {
 	this->_topic = topic;
+}
+
+std::string Channel::getModes() const
+{
+	std::string	modes = "+";
+
+	if (this->_invite)
+		modes += "i";
+	if (this->_restrictedTopic)
+		modes += "t";
+	if (this->_hasKey)
+		modes += "k";
+	if (this->_limit)
+		modes += "l";
+
+	return (modes);
 }
