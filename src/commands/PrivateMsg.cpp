@@ -3,16 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   PrivateMsg.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmaccha- <gmaccha-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:17:56 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/17 11:46:52 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/18 01:19:17 by gmaccha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/Server.hpp"
 #include "../../inc/Replies.hpp"
 
+/**
+ * @brief Handles the PRIVMSG command.
+ * 
+ * Sends a private message from a logged-in client to either a channel
+ * or another client. Validates parameters, target existence and channel
+ * membership before delivering the message.
+ * 
+ * @param buffer Command parameters (target and message).
+ * @param fd File descriptor of the sender.
+ */
 void Server::_handlerClientPrivmsg(const std::string &buffer, const int fd)
 {
 	Client				*sender = _getClient(fd);
