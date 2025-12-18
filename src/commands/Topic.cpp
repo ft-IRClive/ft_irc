@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmaccha- <gmaccha-@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: cgil <cgil@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:18:18 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/18 01:20:24 by gmaccha-         ###   ########.fr       */
+/*   Updated: 2025/12/18 18:14:13 by cgil             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,52 +25,60 @@
  */
 void Server::_handlerClientTopic(const std::string &buffer, const int fd)
 {
-	Client						*client = _getClient(fd);
-	std::istringstream	iss(buffer);
-	std::string					channelName;
-	Channel						*channel;
-	std::string					newTopic;
-	std::string					msg;
-	size_t						pos;
+	Client      *client;
+	Channel     *channel;
+	std::string channelName;
+	std::string newTopic;
+	std::string msg;
+	size_t      pos;
+	size_t      start;
 
+	client = _getClient(fd);
 	if (!client)
 		return;
 
-	if (!client || !client->getIsLogged())
+	if (!client->getIsLogged())
 	{
-		_sendResponse(fd, ERR_NOTREGISTERED(_getHostname(), "*"));
+		_sendResponse(fd, ERR_NOTREGISTERED(_hostname, "*"));
 		return;
 	}
 
-	// Missing channel
-	iss >> channelName >> newTopic;
+	// extract channel name 
+	std::istringstream iss(buffer);
+	iss >> channelName;
+
 	if (channelName.empty())
 	{
-		_sendResponse(fd, ERR_SYNTAX_TOPIC(_hostname, client->getNname()));
+		_sendResponse(fd,
+			ERR_SYNTAX_TOPIC(_hostname, client->getNname()));
 		return;
 	}
 
 	channel = _getChannel(channelName);
 	if (!channel)
 	{
-		_sendResponse(fd, ERR_NOSUCHCHANNEL(_hostname, channelName));
+		_sendResponse(fd,
+			ERR_NOSUCHCHANNEL(_hostname, channelName));
 		return;
 	}
 
-	// Only show topic (no ':' means no modification)
-	if (buffer.find(':') == std::string::npos)
+	// GET topic 
+	start = buffer.find(channelName) + channelName.length();
+	if (start >= buffer.length() - 1)
 	{
 		if (channel->getChTopic().empty())
 			_sendResponse(fd,
-				RPL_NOTOPIC(_hostname, client->getNname(), channelName));
+				RPL_NOTOPIC(_hostname,
+					client->getNname(), channelName));
 		else
 			_sendResponse(fd,
-				RPL_TOPIC(_hostname, client->getNname(),
+				RPL_TOPIC(_hostname,
+					client->getNname(),
 					channelName, channel->getChTopic()));
 		return;
 	}
 
-	// Topic restricted to channel operators
+	//  SET topic (permission check) 
 	if (channel->getRestrictedTopic()
 		&& !channel->isChannelOperator(client->getNname()))
 	{
@@ -80,9 +88,16 @@ void Server::_handlerClientTopic(const std::string &buffer, const int fd)
 		return;
 	}
 
-	// Extract new topic (allows empty topic)
+	// extract topic 
 	pos = buffer.find(':');
-	newTopic = buffer.substr(pos + 1);
+	if (pos != std::string::npos)
+		newTopic = buffer.substr(pos + 1);
+	else
+	{
+		while (start < buffer.length() && buffer[start] == ' ')
+			start++;
+		newTopic = buffer.substr(start);
+	}
 
 	channel->setTopic(newTopic);
 
@@ -91,3 +106,4 @@ void Server::_handlerClientTopic(const std::string &buffer, const int fd)
 
 	_broadcastToChannel(channelName, msg);
 }
+
