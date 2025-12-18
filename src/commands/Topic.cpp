@@ -3,16 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   Topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmaccha- <gmaccha-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:18:18 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/15 17:10:39 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/18 01:20:24 by gmaccha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/Server.hpp"
 #include "../../inc/Replies.hpp"
 
+/**
+ * @brief Handles the TOPIC command.
+ * 
+ * Displays or updates a channel topic. If no new topic is provided,
+ * the current topic is sent to the requesting client. If topic changes
+ * are restricted, only channel operators are allowed to modify it.
+ * 
+ * @param buffer Command parameters (channel and optional topic).
+ * @param fd File descriptor of the requesting client.
+ */
 void Server::_handlerClientTopic(const std::string &buffer, const int fd)
 {
 	Client						*client = _getClient(fd);

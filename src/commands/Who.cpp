@@ -3,15 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   Who.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmaccha- <gmaccha-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 15:29:14 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/15 16:31:42 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/18 01:17:04 by gmaccha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/Server.hpp"
 #include "../../inc/Replies.hpp"
+
+/**
+ * @brief Handles the WHO command for a specific channel.
+ * 
+ * Verifies client state and channel existence, then sends WHO replies
+ * for each client in the channel.
+ * 
+ * @param buffer Command parameters containing the channel name.
+ * @param fd File descriptor of the requesting client.
+ */
 
 void Server::_handlerClientWho(const std::string &buffer, const int fd)
 {

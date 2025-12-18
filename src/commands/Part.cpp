@@ -3,14 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   Part.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgil <cgil@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: gmaccha- <gmaccha-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:17:18 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/15 16:27:57 by cgil             ###   ########.fr       */
+/*   Updated: 2025/12/18 01:38:47 by gmaccha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/Server.hpp"
+
+/**
+ * @brief Handles the PART command.
+ *
+ * Removes a client from a channel and broadcasts the PART message
+ * with an optional reason to all channel members.
+ *
+ * @param buffer Command parameters (channel name and optional message).
+ * @param fd File descriptor of the requesting client.
+ */
 
 void Server::_handlerClientPart(const std::string &buffer, const int fd)
 {
