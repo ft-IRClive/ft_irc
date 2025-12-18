@@ -3,14 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   Quit.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmaccha- <gmaccha-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:18:08 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/11 21:16:30 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/18 01:37:46 by gmaccha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/Server.hpp"
+
+/**
+ * @brief Handles the QUIT command.
+ *
+ * Disconnects a client from the server, removes it from all joined
+ * channels and broadcasts the quit message with an optional reason.
+ *
+ * @param params Optional quit message.
+ * @param fd File descriptor of the quitting client.
+ */
 
 void Server::_handlerClientQuit(const std::string &params, const int fd)
 {

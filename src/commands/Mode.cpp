@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmaccha- <gmaccha-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:16:24 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/17 16:52:48 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/18 01:35:33 by gmaccha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,17 @@ void	_setTopicRestrictionMode(Channel* channel, bool addMode);
 void	_setChannelKeyMode(Channel* channel, const std::string& key, bool addMode);
 bool	_setChannelOperatorMode(Channel* channel, Client* client, bool addMode);
 bool	_setChannelLimitMode(Channel* channel, const std::string& limitStr, bool addMode);
+
+/**
+ * @brief Handles the MODE command for a channel.
+ *
+ * Displays or updates channel modes. Validates client state,
+ * channel existence and operator privileges, then applies
+ * the requested mode flags and broadcasts the change.
+ *
+ * @param buffer Command parameters (channel, modes and argument).
+ * @param fd File descriptor of the requesting client.
+ */
 
 void Server::_handlerClientMode(const std::string &buffer, const int fd)
 {

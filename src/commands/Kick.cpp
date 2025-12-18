@@ -3,14 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   Kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmaccha- <gmaccha-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:16:08 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/15 16:23:49 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/18 01:31:07 by gmaccha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/Server.hpp"
+
+/**
+ * @brief Handles the KICK command.
+ *
+ * Allows a channel operator to remove a client from a channel.
+ * Validates parameters, channel existence, operator privileges
+ * and sends a kick notification to all channel members.
+ *
+ * @param buffer Command parameters (channel, nickname and reason).
+ * @param fd File descriptor of the requesting client.
+ */
 
 void Server::_handlerClientKick(const std::string &buffer, const int fd)
 {

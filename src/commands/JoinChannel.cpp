@@ -3,14 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   JoinChannel.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmaccha- <gmaccha-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:15:56 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/15 16:17:25 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/18 01:36:48 by gmaccha-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/Server.hpp"
+
+/**
+ * @brief Handles the JOIN command.
+ *
+ * Allows a client to join a channel. Creates the channel if it does not
+ * exist, validates access conditions (key, invite-only, user limit),
+ * and broadcasts the join message to channel members.
+ *
+ * @param buffer Command parameters (channel name and optional key).
+ * @param fd File descriptor of the requesting client.
+ */
 
 void Server::_handlerClientJoin(const std::string &buffer, const int fd)
 {
