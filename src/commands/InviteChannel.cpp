@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   InviteChannel.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmaccha- <gmaccha-@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:15:41 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/18 01:30:01 by gmaccha-         ###   ########.fr       */
+/*   Updated: 2025/12/19 09:52:38 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,14 @@
 
 /**
  * @brief Handles the INVITE command.
- * 
+ *
  * Allows a channel operator to invite a client to a channel.
  * Validates client state, channel existence, operator privileges
  * and ensures the invited client is not already in the channel.
- * 
+ *
  * @param buffer Command parameters (nickname and channel name).
  * @param fd File descriptor of the requesting client.
  */
-
 void Server::_handlerClientInvite(const std::string &buffer, const int fd)
 {
 	Client				*client = _getClient(fd);

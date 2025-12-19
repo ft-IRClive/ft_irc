@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmaccha- <gmaccha-@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:16:24 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/18 01:35:33 by gmaccha-         ###   ########.fr       */
+/*   Updated: 2025/12/19 09:52:54 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ bool	_setChannelLimitMode(Channel* channel, const std::string& limitStr, bool ad
  * @param buffer Command parameters (channel, modes and argument).
  * @param fd File descriptor of the requesting client.
  */
-
 void Server::_handlerClientMode(const std::string &buffer, const int fd)
 {
 	Client				*client = _getClient(fd);

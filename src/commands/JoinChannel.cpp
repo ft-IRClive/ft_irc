@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   JoinChannel.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmaccha- <gmaccha-@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:15:56 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/18 01:36:48 by gmaccha-         ###   ########.fr       */
+/*   Updated: 2025/12/19 09:52:44 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@
  * @param buffer Command parameters (channel name and optional key).
  * @param fd File descriptor of the requesting client.
  */
-
 void Server::_handlerClientJoin(const std::string &buffer, const int fd)
 {
 	Client				*client = _getClient(fd);

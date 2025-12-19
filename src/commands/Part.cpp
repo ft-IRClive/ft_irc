@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Part.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmaccha- <gmaccha-@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:17:18 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/18 01:38:47 by gmaccha-         ###   ########.fr       */
+/*   Updated: 2025/12/19 09:47:48 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@
  * @param buffer Command parameters (channel name and optional message).
  * @param fd File descriptor of the requesting client.
  */
-
 void Server::_handlerClientPart(const std::string &buffer, const int fd)
 {
 	Client*				client = _getClient(fd);
@@ -40,6 +39,7 @@ void Server::_handlerClientPart(const std::string &buffer, const int fd)
 
 	//Extract the name of the channel
 	iss >> channelName;
+
 	if (channelName.empty())
 	{
 		_sendResponse(fd, ERR_SYNTAX_PART(_getHostname(), client->getNname()));
@@ -74,6 +74,47 @@ void Server::_handlerClientPart(const std::string &buffer, const int fd)
 	if (!partMsg.empty())
 		msg += " :" + partMsg;
 	msg += CRLF;
+
 	_broadcastToChannel(channelName, msg, -1);
+
+	//Check if this client is an operator and count total operators BEFORE removing
+	bool	wasOperator = channel->isChannelOperator(client->getNname());
+
+	//Count how many operators are in the channel
+	int							operatorCount = 0;
+	const std::vector<Client*>&	allClients = channel->getChClients();
+	for (size_t j = 0; j < allClients.size(); j++)
+	{
+		if (allClients[j] && channel->isChannelOperator(allClients[j]->getNname()))
+			operatorCount++;
+	}
+
+	//If this is the last operator, find a replacement BEFORE removing them
+	Client*	newOp = NULL;
+	if (wasOperator && operatorCount == 1)
+	{
+		//Get the oldest client that is NOT the one leaving
+		for (size_t j = 0; j < allClients.size(); j++)
+		{
+			if (allClients[j] && allClients[j] != client)
+			{
+				newOp = allClients[j];
+				break;
+			}
+		}
+	}
+
+	//Remove the client from the channel
 	channel->part(client);
+
+	//Promote new operator if needed
+	if (newOp)
+	{
+		channel->setChannelOperator(newOp);
+		std::string modeMsg =
+			":" + _getHostname() +
+			" MODE " + channelName +
+			" +o " + newOp->getNname() + CRLF;
+		_broadcastToChannel(channelName, modeMsg, -1);
+	}
 }

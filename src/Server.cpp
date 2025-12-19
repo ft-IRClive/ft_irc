@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:12:39 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/13 14:13:50 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/19 09:45:56 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -356,14 +356,24 @@ void Server::_receiveNewData(const int fd)
 
 	while ((pos = buf.find('\n')) != std::string::npos)
 	{
-
 		std::string line = buf.substr(0, pos);
 		if (!line.empty() && line[line.size() - 1] == '\r')
 			line.erase(line.size() - 1, 1);
+
 		if (!line.empty())
+		{
 			_executeCommand(line, fd);
+			cli = _getClient(fd);
+			if (!cli)
+				return;
+		}
+
 		buf.erase(0, pos + 1);
 	}
+
+	cli = _getClient(fd);
+	if (!cli)
+		return;
 
 	cli->clearBuffer();
 	if (!buf.empty())

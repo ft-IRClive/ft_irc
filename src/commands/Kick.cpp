@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmaccha- <gmaccha-@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:16:08 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/18 01:31:07 by gmaccha-         ###   ########.fr       */
+/*   Updated: 2025/12/19 09:52:49 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@
  * @param buffer Command parameters (channel, nickname and reason).
  * @param fd File descriptor of the requesting client.
  */
-
 void Server::_handlerClientKick(const std::string &buffer, const int fd)
 {
 	Client				*client = _getClient(fd);
