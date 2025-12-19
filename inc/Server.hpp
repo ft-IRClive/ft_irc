@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgil <cgil@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: loruzqui < >                               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:22:46 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/12 13:41:26 by cgil             ###   ########.fr       */
+/*   Updated: 2025/12/19 17:53:23 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,13 +53,13 @@
 #include "../inc/Client.hpp"
 #include "../inc/Replies.hpp"
 
-#define RED     "\033[31m"
-#define GREEN   "\033[32m"
-#define YELLOW  "\033[33m"
-#define BLUE    "\033[34m"
-#define MAGENTA "\033[35m"
-#define CYAN    "\033[36m"
-#define RESET   "\033[0m"
+#define RED		"\033[31m"
+#define GREEN	"\033[32m"
+#define YELLOW	"\033[33m"
+#define BLUE	"\033[34m"
+#define MAGENTA	"\033[35m"
+#define CYAN	"\033[36m"
+#define RESET	"\033[0m"
 class Server
 {
 	private:
@@ -85,7 +85,7 @@ class Server
 
 		std::string	_getHostname();
 
-		void	_isValidPort(const std::string &port); //Between 1 and 65535
+		void	_isValidPort(const std::string &port);
 		bool	_isClientInAnyChannel(const int fd);
 		bool	_clientIsReadyToLogin(const int fd); //If PASS + NICK + USER was send
 		bool	_isValidNickname(const std::string &nickname); //IRC rules

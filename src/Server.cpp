@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
+/*   By: loruzqui < >                               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:12:39 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/19 09:45:56 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/19 18:07:29 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -296,7 +296,7 @@ void Server::_acceptNewClient()
 		std::cout << "Accept() failed" << std::endl;
 		return ;
 	}
-	//Put the new socket in mode non blocl¡k
+	//Put the new socket in mode non block
 	if (fcntl(fd, F_SETFL, O_NONBLOCK) == -1)
 	{
 		std::cout << "Fcntl() failed" << std::endl;

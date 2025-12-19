@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
+/*   By: loruzqui < >                               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 10:08:55 by claudia           #+#    #+#             */
-/*   Updated: 2025/12/17 16:45:31 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/19 17:52:35 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@
 	(std::string(":") + server + " 331 " + nick + " " + channel + " :No topic is set" CRLF)
 
 
-	#define RPL_KICK(host, channel, kicker, kicked, comment) \
+#define RPL_KICK(host, channel, kicker, kicked, comment) \
 	(std::string(":") + host + " KICK " + channel + " " + kicked + " :" + comment + CRLF)
 
 

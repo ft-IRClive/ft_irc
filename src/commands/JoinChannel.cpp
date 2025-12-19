@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   JoinChannel.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
+/*   By: loruzqui < >                               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:15:56 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/19 09:52:44 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/19 17:53:43 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ void Server::_handlerClientJoin(const std::string &buffer, const int fd)
 		return;
 	}
 	channel = _getChannel(channelName);
+
 	//If the channel doesn't exists, we create it and we join the client
 	if (!channel)
 	{

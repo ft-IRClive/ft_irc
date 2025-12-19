@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
+/*   By: loruzqui < >                               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:16:24 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/19 10:08:46 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/19 17:54:33 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void Server::_handlerClientMode(const std::string &buffer, const int fd)
 	std::string			argument;
 	Channel				*channel;
 
-	// Check if the client is correctly logged
+	//Check if the client is correctly logged
 	if (!client || !client->getIsLogged())
 	{
 		_sendResponse(fd, ERR_NOTREGISTERED(_getHostname(), "*"));
@@ -60,7 +60,7 @@ void Server::_handlerClientMode(const std::string &buffer, const int fd)
 		return;
 	}
 
-	// Verify if the channel exists
+	//Verify if the channel exists
 	channel = _getChannel(channelName);
 	if (!channel)
 	{
@@ -99,7 +99,7 @@ void Server::_handlerClientMode(const std::string &buffer, const int fd)
 			return;
 		}
 
-		Client* target = _getClient(argument);
+		Client*	target = _getClient(argument);
 		if (!target)
 		{
 			_sendResponse(fd, ERR_NOSUCHNICK(_getHostname(), argument));
@@ -216,11 +216,9 @@ void _setChannelKeyMode(Channel* channel, const std::string& key, bool addMode)
 
 bool _setChannelOperatorMode(Channel* channel, Client* client, bool addMode)
 {
-	// Verificar que el cliente existe
 	if (!client)
 		return (false);
 
-	// Verificar que el cliente está en el canal
 	if (!channel->hasClient(client))
 		return (false);
 

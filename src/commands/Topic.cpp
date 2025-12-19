@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgil <cgil@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: loruzqui < >                               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:18:18 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/18 18:14:13 by cgil             ###   ########.fr       */
+/*   Updated: 2025/12/19 18:07:59 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,23 +15,23 @@
 
 /**
  * @brief Handles the TOPIC command.
- * 
+ *
  * Displays or updates a channel topic. If no new topic is provided,
  * the current topic is sent to the requesting client. If topic changes
  * are restricted, only channel operators are allowed to modify it.
- * 
+ *
  * @param buffer Command parameters (channel and optional topic).
  * @param fd File descriptor of the requesting client.
  */
 void Server::_handlerClientTopic(const std::string &buffer, const int fd)
 {
-	Client      *client;
-	Channel     *channel;
-	std::string channelName;
-	std::string newTopic;
-	std::string msg;
-	size_t      pos;
-	size_t      start;
+	Client		*client;
+	Channel		*channel;
+	std::string	channelName;
+	std::string	newTopic;
+	std::string	msg;
+	size_t		pos;
+	size_t		start;
 
 	client = _getClient(fd);
 	if (!client)
@@ -43,7 +43,7 @@ void Server::_handlerClientTopic(const std::string &buffer, const int fd)
 		return;
 	}
 
-	// extract channel name 
+	//Extract channel name
 	std::istringstream iss(buffer);
 	iss >> channelName;
 
@@ -62,7 +62,7 @@ void Server::_handlerClientTopic(const std::string &buffer, const int fd)
 		return;
 	}
 
-	// GET topic 
+	//GET topic
 	start = buffer.find(channelName) + channelName.length();
 	if (start >= buffer.length() - 1)
 	{
@@ -78,7 +78,7 @@ void Server::_handlerClientTopic(const std::string &buffer, const int fd)
 		return;
 	}
 
-	//  SET topic (permission check) 
+	//SET topic (permission check)
 	if (channel->getRestrictedTopic()
 		&& !channel->isChannelOperator(client->getNname()))
 	{
@@ -88,7 +88,7 @@ void Server::_handlerClientTopic(const std::string &buffer, const int fd)
 		return;
 	}
 
-	// extract topic 
+	//Extract topic
 	pos = buffer.find(':');
 	if (pos != std::string::npos)
 		newTopic = buffer.substr(pos + 1);
@@ -106,4 +106,3 @@ void Server::_handlerClientTopic(const std::string &buffer, const int fd)
 
 	_broadcastToChannel(channelName, msg);
 }
-
