@@ -6,7 +6,7 @@
 /*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 15:16:24 by loruzqui          #+#    #+#             */
-/*   Updated: 2025/12/19 09:52:54 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/12/19 10:08:46 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,34 @@ void Server::_handlerClientMode(const std::string &buffer, const int fd)
 			)
 		);
 		return;
+	}
+
+	if (modeFlags.find('o') != std::string::npos)
+	{
+		if (argument.empty())
+		{
+			_sendResponse(fd, ERR_SYNTAX_MODE(_getHostname(), client->getNname()));
+			return;
+		}
+
+		Client* target = _getClient(argument);
+		if (!target)
+		{
+			_sendResponse(fd, ERR_NOSUCHNICK(_getHostname(), argument));
+			return;
+		}
+
+		if (!channel->hasClient(target))
+		{
+			_sendResponse(fd,
+				ERR_USERNOTINCHANNEL(
+					_getHostname(),
+					argument,
+					channelName
+				)
+			);
+			return;
+		}
 	}
 
 	if (!_processFlagsMode(modeFlags, channel, _getClient(argument), argument))
