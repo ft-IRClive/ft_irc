@@ -2,8 +2,10 @@
 
 ## 📡 Internet Relay Chat Server (IRC)
 
-`ft_irc` es una implementación en **C++** de un servidor **IRC** siguiendo el protocolo definido en **RFC 1459**.
+Proyecto del common core de 42 Madrid llamado `ft_irc`. Es una implementación en **C++** de un servidor **IRC** siguiendo el protocolo definido en **RFC 1459**.
 El servidor permite la conexión de múltiples clientes simultáneamente, la gestión de canales y usuarios, y la ejecución de los comandos IRC más comunes.
+
+![Logo 42 Madrid](42-Madrid.jpeg)
 
 ---
 
