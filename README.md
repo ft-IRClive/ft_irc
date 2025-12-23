@@ -12,6 +12,7 @@ El servidor permite la conexión de múltiples clientes simultáneamente, la ges
 ## 📚 Índice
 
 * [Características](#-características)
+* [Demostración rápida](#-demostración-rápida)
 * [Compilación](#-compilación)
 * [Ejecución](#-ejecución)
 * [Conexión al servidor](#-conexión-al-servidor)
